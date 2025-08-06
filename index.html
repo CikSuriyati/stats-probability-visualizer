@@ -13,46 +13,95 @@
 <body>
   <h1>Statistics Probability Visualizer</h1>
 
-  <h2>Normal Distribution Calculator</h2>
-
-  <label for="normal-type">Select Normal Distribution Type:</label>
-  <select id="normal-type">
-    <option value="population">Population Distribution</option>
-    <option value="sampling">Sampling Distribution of the Mean</option>
-  </select>
-
-  <label for="mean">Mean (μ):</label>
-  <input type="number" id="mean" step="any">
-
-  <label for="sd">Standard Deviation (σ):</label>
-  <input type="number" id="sd" step="any">
-
-  <div id="n-container" style="display:none;">
-    <label for="n-size">Sample Size (n):</label>
-    <input type="number" id="n-size" step="1" min="1">
+  <!-- Tabs -->
+  <div class="tab-container">
+    <button class="tab-button active" onclick="openTab(event, 'normal-tab')">Normal</button>
+    <button class="tab-button" onclick="openTab(event, 't-tab')">t-Distribution</button>
+    <button class="tab-button" onclick="openTab(event, 'binomial-tab')">Binomial</button>
+    <button class="tab-button" onclick="openTab(event, 'poisson-tab')">Poisson</button>
   </div>
 
-  <label for="inequality">Inequality:</label>
-  <select id="inequality">
-    <option value="lt">&lt;</option>
-    <option value="le">&le;</option>
-    <option value="gt">&gt;</option>
-    <option value="ge">&ge;</option>
-    <option value="between">Between</option>
-  </select>
+  <!-- Normal Distribution Tab -->
+  <div id="normal-tab" class="tab-content" style="display:block;">
+    <h2>Normal Distribution Calculator</h2>
+    <label for="normal-type">Select Type:</label>
+    <select id="normal-type">
+      <option value="population">Population Distribution</option>
+      <option value="sampling">Sampling Distribution of the Mean</option>
+    </select>
 
-  <label for="x-value">Value X (or lower bound for between):</label>
-  <input type="number" id="x-value" step="any">
+    <label for="mean">Mean (μ):</label>
+    <input type="number" id="mean" step="any">
 
-  <div id="upper-bound-container" style="display:none;">
-    <label for="upper-bound">Upper Bound:</label>
-    <input type="number" id="upper-bound" step="any">
+    <label for="sd">Standard Deviation (σ):</label>
+    <input type="number" id="sd" step="any">
+
+    <div id="n-container" style="display:none;">
+      <label for="n-size">Sample Size (n):</label>
+      <input type="number" id="n-size" step="1" min="1">
+    </div>
+
+    <label for="inequality">Inequality:</label>
+    <select id="inequality">
+      <option value="lt">&lt;</option>
+      <option value="le">&le;</option>
+      <option value="gt">&gt;</option>
+      <option value="ge">&ge;</option>
+      <option value="between">Between</option>
+    </select>
+
+    <label for="x-value">Value X (or lower bound):</label>
+    <input type="number" id="x-value" step="any">
+
+    <div id="upper-bound-container" style="display:none;">
+      <label for="upper-bound">Upper Bound:</label>
+      <input type="number" id="upper-bound" step="any">
+    </div>
+
+    <button onclick="calculateNormal()">Calculate Probability</button>
+    <div id="result"></div>
+    <div id="plot" style="width:100%;max-width:700px;height:400px;"></div>
   </div>
 
-  <button onclick="calculateNormal()">Calculate Probability</button>
+  <!-- t-Distribution Tab -->
+  <div id="t-tab" class="tab-content">
+    <h2>t-Distribution Calculator</h2>
+    <label for="t-df">Degrees of Freedom (df):</label>
+    <input type="number" id="t-df" step="1" min="1">
 
-  <div id="result"></div>
-  <div id="plot" style="width:100%;max-width:700px;height:400px;"></div>
+    <label for="t-inequality">Inequality:</label>
+    <select id="t-inequality">
+      <option value="lt">&lt;</option>
+      <option value="le">&le;</option>
+      <option value="gt">&gt;</option>
+      <option value="ge">&ge;</option>
+      <option value="between">Between</option>
+    </select>
+
+    <label for="t-x-value">Value X (or lower bound):</label>
+    <input type="number" id="t-x-value" step="any">
+
+    <div id="t-upper-bound-container" style="display:none;">
+      <label for="t-upper-bound">Upper Bound:</label>
+      <input type="number" id="t-upper-bound" step="any">
+    </div>
+
+    <button onclick="calculateT()">Calculate Probability</button>
+    <div id="t-result"></div>
+    <div id="t-plot" style="width:100%;max-width:700px;height:400px;"></div>
+  </div>
+
+  <!-- Binomial Tab (Coming Soon) -->
+  <div id="binomial-tab" class="tab-content">
+    <h2>Binomial Distribution Calculator</h2>
+    <p>Coming soon...</p>
+  </div>
+
+  <!-- Poisson Tab (Coming Soon) -->
+  <div id="poisson-tab" class="tab-content">
+    <h2>Poisson Distribution Calculator</h2>
+    <p>Coming soon...</p>
+  </div>
 
   <script src="distributions.js"></script>
 </body>
