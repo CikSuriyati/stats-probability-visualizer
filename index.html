@@ -1,133 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<style type="text/css">
-.inline {
-  background-color: #f7f7f7;
-  border:solid 1px #B0B0B0;
-}
-.error {
-	font-weight: bold;
-	color: #FF0000;
-}
-.warning {
-	font-weight: bold;
-}
-.message {
-	font-style: italic;
-}
-.source, .output, .warning, .error, .message {
-	padding: 0 1em;
-  border:solid 1px #F7F7F7;
-}
-.source {
-  background-color: #f5f5f5;
-}
-.left {
-  text-align: left;
-}
-.right {
-  text-align: right;
-}
-.center {
-  text-align: center;
-}
-.hl.num {
-  color: #AF0F91;
-}
-.hl.sng {
-  color: #317ECC;
-}
-.hl.com {
-  color: #AD95AF;
-  font-style: italic;
-}
-.hl.opt {
-  color: #000000;
-}
-.hl.def {
-  color: #585858;
-}
-.hl.kwa {
-  color: #295F94;
-  font-weight: bold;
-}
-.hl.kwb {
-  color: #B05A65;
-}
-.hl.kwc {
-  color: #55aa55;
-}
-.hl.kwd {
-  color: #BC5A65;
-  font-weight: bold;
-}
-</style>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Statistics Probability Visualizer</title>
   <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&family=Roboto&display=swap" rel="stylesheet">
-  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+  <!-- Libraries -->
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jstat@latest/dist/jstat.min.js"></script>
 </head>
 <body>
-  <header>
-    <h1>📊 Statistics Probability Visualizer</h1>
-    <p>Learn distributions without reading tables</p>
-  </header>
+  <h1>Statistics Probability Visualizer</h1>
 
-  <main class="container">
-    <section class="card">
-      <h2>Choose Distribution</h2>
-      <label>Distribution:</label>
-      <select id="distType" onchange="renderInputs()">
-        <option value="normal">Normal</option>
-        <option value="t">t-distribution</option>
-        <option value="binomial">Binomial</option>
-        <option value="poisson">Poisson</option>
-      </select>
+  <h2>Normal Distribution Calculator</h2>
 
-      <div id="distInputs"></div>
+  <label for="normal-type">Select Normal Distribution Type:</label>
+  <select id="normal-type">
+    <option value="population">Population Distribution</option>
+    <option value="sampling">Sampling Distribution of the Mean</option>
+  </select>
 
-      <label>Calculation Type:</label>
-      <select id="calcType" onchange="toggleBetweenInputs()">
-        <option value="less">P(X ≤ x)</option>
-        <option value="greater">P(X ≥ x)</option>
-        <option value="between">P(a < X < b)</option>
-      </select>
+  <label for="mean">Mean (μ):</label>
+  <input type="number" id="mean" step="any">
 
-      <div id="singleValueInputs">
-        <label>Value (x):</label>
-        <input type="number" id="x" value="60" step="0.1">
-      </div>
+  <label for="sd">Standard Deviation (σ):</label>
+  <input type="number" id="sd" step="any">
 
-      <div id="betweenInputs" style="display:none;">
-        <label>Lower Bound (a):</label>
-        <input type="number" id="x1" value="45" step="0.1">
-        <label>Upper Bound (b):</label>
-        <input type="number" id="x2" value="55" step="0.1">
-      </div>
+  <div id="n-container" style="display:none;">
+    <label for="n-size">Sample Size (n):</label>
+    <input type="number" id="n-size" step="1" min="1">
+  </div>
 
-      <button onclick="calculate()">Calculate Probability</button>
-    </section>
+  <label for="inequality">Inequality:</label>
+  <select id="inequality">
+    <option value="lt">&lt;</option>
+    <option value="le">&le;</option>
+    <option value="gt">&gt;</option>
+    <option value="ge">&ge;</option>
+    <option value="between">Between</option>
+  </select>
 
-    <section class="card output">
-      <h2>Result</h2>
-      <div id="output">Enter values and click Calculate</div>
-    </section>
+  <label for="x-value">Value X (or lower bound for between):</label>
+  <input type="number" id="x-value" step="any">
 
-    <section class="card">
-      <h2>Graph</h2>
-      <div id="graph"></div>
-    </section>
-  </main>
+  <div id="upper-bound-container" style="display:none;">
+    <label for="upper-bound">Upper Bound:</label>
+    <input type="number" id="upper-bound" step="any">
+  </div>
 
-  <footer>
-    📌 Made for Students – Suriyati Ujang © 2025
-  </footer>
+  <button onclick="calculateNormal()">Calculate Probability</button>
+
+  <div id="result"></div>
+  <div id="plot" style="width:100%;max-width:700px;height:400px;"></div>
 
   <script src="distributions.js"></script>
-  <script src="script.js"></script>
 </body>
 </html>
