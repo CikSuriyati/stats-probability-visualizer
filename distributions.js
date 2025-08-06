@@ -1,114 +1,214 @@
-// Tab switching
-function openTab(evt, tabId) {
-    document.querySelectorAll(".tab-content").forEach(content => content.style.display = "none");
-    document.querySelectorAll(".tab-button").forEach(tab => tab.classList.remove("active"));
-    document.getElementById(tabId).style.display = "block";
-    evt.currentTarget.classList.add("active");
-}
+// distributions.js
 
-// ===== Normal Distribution =====
+// ===== NORMAL DISTRIBUTION =====
 function calculateNormal() {
     const type = document.getElementById("normal-type").value;
     const mean = parseFloat(document.getElementById("mean").value);
     const sd = parseFloat(document.getElementById("sd").value);
-    const nSize = parseFloat(document.getElementById("n-size").value) || null;
-    const inequality = document.getElementById("inequality").value;
-    const xValue = parseFloat(document.getElementById("x-value").value);
-    const upperBound = parseFloat(document.getElementById("upper-bound").value);
+    const inequality = document.getElementById("normal-inequality").value;
+    const x = parseFloat(document.getElementById("x-value").value);
+    const upper = parseFloat(document.getElementById("upper-bound")?.value || "");
+    let n = 1;
 
-    if (isNaN(mean) || isNaN(sd) || isNaN(xValue) || (inequality === "between" && isNaN(upperBound))) {
-        alert("Please fill in all required fields.");
-        return;
+    if (type === "sampling") {
+        n = parseFloat(document.getElementById("n-size").value);
+        if (isNaN(n) || n <= 0) {
+            alert("Please enter a valid sample size (n)");
+            return;
+        }
     }
 
-    let sigma = sd;
-    if (type === "sampling" && nSize) {
-        sigma = sd / Math.sqrt(nSize);
+    // Standard deviation adjustment for sampling
+    const sdUsed = type === "sampling" ? sd / Math.sqrt(n) : sd;
+
+    // Probability calculation
+    let prob = 0;
+    if (inequality === "lt") prob = jStat.normal.cdf(x, mean, sdUsed);
+    if (inequality === "le") prob = jStat.normal.cdf(x, mean, sdUsed);
+    if (inequality === "gt") prob = 1 - jStat.normal.cdf(x, mean, sdUsed);
+    if (inequality === "ge") prob = 1 - jStat.normal.cdf(x, mean, sdUsed);
+    if (inequality === "between") {
+        if (isNaN(upper)) {
+            alert("Please enter the upper bound value");
+            return;
+        }
+        prob = jStat.normal.cdf(upper, mean, sdUsed) - jStat.normal.cdf(x, mean, sdUsed);
     }
 
-    let probability = 0;
-    if (["lt","le"].includes(inequality)) {
-        probability = jStat.normal.cdf(xValue, mean, sigma);
-    } else if (["gt","ge"].includes(inequality)) {
-        probability = 1 - jStat.normal.cdf(xValue, mean, sigma);
-    } else if (inequality === "between") {
-        probability = jStat.normal.cdf(upperBound, mean, sigma) - jStat.normal.cdf(xValue, mean, sigma);
-    }
-
-    probability = probability.toFixed(4);
-    document.getElementById("result").innerHTML = `P = ${probability} (Mean: ${mean}, SD: ${sigma})`;
-
-    plotNormal(mean, sigma, inequality, xValue, upperBound);
+    document.getElementById("result").innerHTML = `Probability: ${prob.toFixed(4)}`;
+    plotNormal(mean, sdUsed, x, upper, inequality);
 }
 
-function plotNormal(mean, sigma, inequality, xValue, upperBound) {
-    const x = [], y = [], hx = [], hy = [];
-    for (let i = mean - 4*sigma; i <= mean + 4*sigma; i += 0.1) {
-        x.push(i);
-        y.push(jStat.normal.pdf(i, mean, sigma));
-        let inRegion = false;
-        if (["lt","le"].includes(inequality)) inRegion = i <= xValue;
-        if (["gt","ge"].includes(inequality)) inRegion = i >= xValue;
-        if (inequality === "between") inRegion = i >= xValue && i <= upperBound;
-        if (inRegion) { hx.push(i); hy.push(jStat.normal.pdf(i, mean, sigma)); }
+function plotNormal(mean, sd, x, upper, inequality) {
+    let xValues = [];
+    for (let i = mean - 4 * sd; i <= mean + 4 * sd; i += 0.1) {
+        xValues.push(i);
     }
-    Plotly.newPlot('plot', [
-        { x, y, type: 'scatter', mode: 'lines', name: 'Normal PDF' },
-        { x: hx, y: hy, type: 'scatter', mode: 'lines', name: 'Highlighted', fill: 'tozeroy' }
-    ], { title: 'Normal Distribution' });
+    let yValues = xValues.map(val => jStat.normal.pdf(val, mean, sd));
+
+    let highlightX = [], highlightY = [];
+    xValues.forEach(val => {
+        let include = false;
+        if (inequality === "lt" || inequality === "le") include = val <= x;
+        if (inequality === "gt" || inequality === "ge") include = val >= x;
+        if (inequality === "between") include = val >= x && val <= upper;
+        if (include) {
+            highlightX.push(val);
+            highlightY.push(jStat.normal.pdf(val, mean, sd));
+        }
+    });
+
+    let trace1 = { x: xValues, y: yValues, type: 'scatter', mode: 'lines', name: 'PDF' };
+    let trace2 = { x: highlightX, y: highlightY, type: 'scatter', mode: 'lines', fill: 'tozeroy', name: 'Probability Area' };
+
+    Plotly.newPlot('continuous-plot', [trace1, trace2], { title: 'Normal Distribution', margin: { t: 30 } });
 }
 
-document.getElementById("normal-type").addEventListener("change", function() {
-    document.getElementById("n-container").style.display = this.value === "sampling" ? "block" : "none";
-});
-document.getElementById("inequality").addEventListener("change", function() {
-    document.getElementById("upper-bound-container").style.display = this.value === "between" ? "block" : "none";
-});
-
-// ===== t-Distribution =====
+// ===== T-DISTRIBUTION =====
 function calculateT() {
     const df = parseFloat(document.getElementById("t-df").value);
     const inequality = document.getElementById("t-inequality").value;
-    const xValue = parseFloat(document.getElementById("t-x-value").value);
-    const upperBound = parseFloat(document.getElementById("t-upper-bound").value);
+    const x = parseFloat(document.getElementById("t-x-value").value);
+    const upper = parseFloat(document.getElementById("t-upper-bound")?.value || "");
 
-    if (isNaN(df) || isNaN(xValue) || (inequality === "between" && isNaN(upperBound))) {
-        alert("Please fill in all required fields.");
-        return;
+    let prob = 0;
+    if (inequality === "lt" || inequality === "le") prob = jStat.studentt.cdf(x, df);
+    if (inequality === "gt" || inequality === "ge") prob = 1 - jStat.studentt.cdf(x, df);
+    if (inequality === "between") {
+        if (isNaN(upper)) {
+            alert("Please enter the upper bound value");
+            return;
+        }
+        prob = jStat.studentt.cdf(upper, df) - jStat.studentt.cdf(x, df);
     }
 
-    let probability = 0;
-    if (["lt","le"].includes(inequality)) {
-        probability = jStat.studentt.cdf(xValue, df);
-    } else if (["gt","ge"].includes(inequality)) {
-        probability = 1 - jStat.studentt.cdf(xValue, df);
-    } else if (inequality === "between") {
-        probability = jStat.studentt.cdf(upperBound, df) - jStat.studentt.cdf(xValue, df);
-    }
-
-    probability = probability.toFixed(4);
-    document.getElementById("t-result").innerHTML = `P = ${probability} (df: ${df})`;
-
-    plotT(df, inequality, xValue, upperBound);
+    document.getElementById("t-result").innerHTML = `Probability: ${prob.toFixed(4)}`;
+    plotT(df, x, upper, inequality);
 }
 
-function plotT(df, inequality, xValue, upperBound) {
-    const x = [], y = [], hx = [], hy = [];
+function plotT(df, x, upper, inequality) {
+    let xValues = [];
     for (let i = -5; i <= 5; i += 0.1) {
-        x.push(i);
-        y.push(jStat.studentt.pdf(i, df));
-        let inRegion = false;
-        if (["lt","le"].includes(inequality)) inRegion = i <= xValue;
-        if (["gt","ge"].includes(inequality)) inRegion = i >= xValue;
-        if (inequality === "between") inRegion = i >= xValue && i <= upperBound;
-        if (inRegion) { hx.push(i); hy.push(jStat.studentt.pdf(i, df)); }
+        xValues.push(i);
     }
-    Plotly.newPlot('t-plot', [
-        { x, y, type: 'scatter', mode: 'lines', name: 't PDF' },
-        { x: hx, y: hy, type: 'scatter', mode: 'lines', name: 'Highlighted', fill: 'tozeroy' }
-    ], { title: 't-Distribution' });
+    let yValues = xValues.map(val => jStat.studentt.pdf(val, df));
+
+    let highlightX = [], highlightY = [];
+    xValues.forEach(val => {
+        let include = false;
+        if (inequality === "lt" || inequality === "le") include = val <= x;
+        if (inequality === "gt" || inequality === "ge") include = val >= x;
+        if (inequality === "between") include = val >= x && val <= upper;
+        if (include) {
+            highlightX.push(val);
+            highlightY.push(jStat.studentt.pdf(val, df));
+        }
+    });
+
+    let trace1 = { x: xValues, y: yValues, type: 'scatter', mode: 'lines', name: 'PDF' };
+    let trace2 = { x: highlightX, y: highlightY, type: 'scatter', mode: 'lines', fill: 'tozeroy', name: 'Probability Area' };
+
+    Plotly.newPlot('continuous-plot', [trace1, trace2], { title: 't-Distribution', margin: { t: 30 } });
 }
 
-document.getElementById("t-inequality").addEventListener("change", function() {
-    document.getElementById("t-upper-bound-container").style.display = this.value === "between" ? "block" : "none";
-});
+// ===== BINOMIAL DISTRIBUTION =====
+function calculateBinomial() {
+    const n = parseInt(document.getElementById("binom-n").value);
+    const p = parseFloat(document.getElementById("binom-p").value);
+    const inequality = document.getElementById("binom-inequality").value;
+    const x = parseInt(document.getElementById("binom-x").value);
+    const upper = parseInt(document.getElementById("binom-upper")?.value || "");
+
+    let prob = 0;
+    if (inequality === "eq") prob = jStat.binomial.pdf(x, n, p);
+    if (inequality === "lt") prob = jStat.binomial.cdf(x - 1, n, p);
+    if (inequality === "le") prob = jStat.binomial.cdf(x, n, p);
+    if (inequality === "gt") prob = 1 - jStat.binomial.cdf(x, n, p);
+    if (inequality === "ge") prob = 1 - jStat.binomial.cdf(x - 1, n, p);
+    if (inequality === "between") {
+        if (isNaN(upper)) {
+            alert("Please enter the upper bound value");
+            return;
+        }
+        prob = jStat.binomial.cdf(upper, n, p) - jStat.binomial.cdf(x - 1, n, p);
+    }
+
+    document.getElementById("binom-result").innerHTML = `Probability: ${prob.toFixed(4)}`;
+    plotBinomial(n, p, x, upper, inequality);
+}
+
+function plotBinomial(n, p, x, upper, inequality) {
+    let xValues = [], yValues = [], highlightX = [], highlightY = [];
+    for (let k = 0; k <= n; k++) {
+        let pdfVal = jStat.binomial.pdf(k, n, p);
+        xValues.push(k);
+        yValues.push(pdfVal);
+        let include = false;
+        if (inequality === "eq") include = k === x;
+        if (inequality === "lt") include = k < x;
+        if (inequality === "le") include = k <= x;
+        if (inequality === "gt") include = k > x;
+        if (inequality === "ge") include = k >= x;
+        if (inequality === "between") include = k >= x && k <= upper;
+        if (include) {
+            highlightX.push(k);
+            highlightY.push(pdfVal);
+        }
+    }
+
+    let trace1 = { x: xValues, y: yValues, type: 'bar', name: 'PMF' };
+    let trace2 = { x: highlightX, y: highlightY, type: 'bar', name: 'Probability Area', marker: { color: 'orange' } };
+
+    Plotly.newPlot('discrete-plot', [trace1, trace2], { title: 'Binomial Distribution', margin: { t: 30 } });
+}
+
+// ===== POISSON DISTRIBUTION =====
+function calculatePoisson() {
+    const lambda = parseFloat(document.getElementById("pois-lambda").value);
+    const inequality = document.getElementById("pois-inequality").value;
+    const x = parseInt(document.getElementById("pois-x").value);
+    const upper = parseInt(document.getElementById("pois-upper")?.value || "");
+
+    let prob = 0;
+    if (inequality === "eq") prob = jStat.poisson.pdf(x, lambda);
+    if (inequality === "lt") prob = jStat.poisson.cdf(x - 1, lambda);
+    if (inequality === "le") prob = jStat.poisson.cdf(x, lambda);
+    if (inequality === "gt") prob = 1 - jStat.poisson.cdf(x, lambda);
+    if (inequality === "ge") prob = 1 - jStat.poisson.cdf(x - 1, lambda);
+    if (inequality === "between") {
+        if (isNaN(upper)) {
+            alert("Please enter the upper bound value");
+            return;
+        }
+        prob = jStat.poisson.cdf(upper, lambda) - jStat.poisson.cdf(x - 1, lambda);
+    }
+
+    document.getElementById("pois-result").innerHTML = `Probability: ${prob.toFixed(4)}`;
+    plotPoisson(lambda, x, upper, inequality);
+}
+
+function plotPoisson(lambda, x, upper, inequality) {
+    let maxX = Math.ceil(lambda + 4 * Math.sqrt(lambda));
+    let xValues = [], yValues = [], highlightX = [], highlightY = [];
+    for (let k = 0; k <= maxX; k++) {
+        let pdfVal = jStat.poisson.pdf(k, lambda);
+        xValues.push(k);
+        yValues.push(pdfVal);
+        let include = false;
+        if (inequality === "eq") include = k === x;
+        if (inequality === "lt") include = k < x;
+        if (inequality === "le") include = k <= x;
+        if (inequality === "gt") include = k > x;
+        if (inequality === "ge") include = k >= x;
+        if (inequality === "between") include = k >= x && k <= upper;
+        if (include) {
+            highlightX.push(k);
+            highlightY.push(pdfVal);
+        }
+    }
+
+    let trace1 = { x: xValues, y: yValues, type: 'bar', name: 'PMF' };
+    let trace2 = { x: highlightX, y: highlightY, type: 'bar', name: 'Probability Area', marker: { color: 'orange' } };
+
+    Plotly.newPlot('discrete-plot', [trace1, trace2], { title: 'Poisson Distribution', margin: { t: 30 } });
+}

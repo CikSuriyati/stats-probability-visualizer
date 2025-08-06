@@ -1,50 +1,80 @@
 body {
-  font-family: Arial, sans-serif;
-  margin: 20px;
+    font-family: Arial, sans-serif;
+    background: #f6f8fa;
+    margin: 0;
+    padding: 0;
 }
 
-.tab-container {
-  display: flex;
-  margin-bottom: 10px;
+.container {
+    max-width: 900px;
+    margin: auto;
+    padding: 20px;
+    background: white;
+    margin-top: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
-.tab-button {
-  flex: 1;
-  padding: 10px;
-  cursor: pointer;
-  background-color: #eee;
-  border: 1px solid #ccc;
-  text-align: center;
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
 }
 
-.tab-button.active {
-  background-color: #ddd;
-  font-weight: bold;
+.tabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
 }
 
-.tab-content {
-  display: none;
-  padding: 10px;
-  border: 1px solid #ccc;
+.tab-btn {
+    background: #ddd;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin: 0 5px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.tab-btn.active {
+    background: #007bff;
+    color: white;
 }
 
 label {
-  display: block;
-  margin-top: 10px;
+    display: block;
+    margin: 10px 0 5px;
 }
 
-input, select, button {
-  margin-bottom: 10px;
-  padding: 5px;
+select, input, button {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
 }
 
 button {
-  background-color: #4285f4;
-  color: white;
-  border: none;
-  cursor: pointer;
+    background: #007bff;
+    color: white;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
 }
 
 button:hover {
-  background-color: #357ae8;
+    background: #0056b3;
+}
+
+#plot-area {
+    margin-top: 20px;
+}
+
+#plot, #t-plot, #binom-plot, #pois-plot {
+    display: none;
+}
+
+.result {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #ff7f0e;
+    margin-top: 10px;
 }
