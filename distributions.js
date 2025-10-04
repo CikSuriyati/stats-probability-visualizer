@@ -1,5 +1,99 @@
 // distributions.js
 
+// ===== USER COUNT TRACKING =====
+function updateUserCount() {
+    // Get current count from localStorage or initialize to 0
+    let userCount = parseInt(localStorage.getItem('probVizUserCount') || '0');
+    
+    // Check if this is a new session (not just a page refresh)
+    const sessionKey = 'probVizSession_' + Date.now();
+    const lastSession = localStorage.getItem('probVizLastSession');
+    const now = Date.now();
+    
+    // Only increment if it's been more than 30 minutes since last visit
+    // This prevents counting page refreshes as new users
+    if (!lastSession || (now - parseInt(lastSession)) > 30 * 60 * 1000) {
+        userCount++;
+        localStorage.setItem('probVizUserCount', userCount.toString());
+        localStorage.setItem('probVizLastSession', now.toString());
+    }
+    
+    // Display the count with formatting
+    const countElement = document.getElementById('user-count');
+    if (countElement) {
+        countElement.textContent = userCount.toLocaleString();
+        
+        // Add a subtle animation when count updates
+        countElement.style.transition = 'all 0.3s ease';
+        countElement.style.transform = 'scale(1.1)';
+        setTimeout(() => {
+            countElement.style.transform = 'scale(1)';
+        }, 300);
+    }
+    
+    // Track additional metrics
+    trackUsageMetrics();
+    
+    // Optional: Send to analytics service
+    // sendUserCountToServer(userCount);
+}
+
+function trackUsageMetrics() {
+    // Track total page views
+    let pageViews = parseInt(localStorage.getItem('probVizPageViews') || '0');
+    pageViews++;
+    localStorage.setItem('probVizPageViews', pageViews.toString());
+    
+    // Track first visit date
+    if (!localStorage.getItem('probVizFirstVisit')) {
+        localStorage.setItem('probVizFirstVisit', new Date().toISOString());
+    }
+    
+    // Track last visit
+    localStorage.setItem('probVizLastVisit', new Date().toISOString());
+}
+
+function getUsageStats() {
+    const userCount = parseInt(localStorage.getItem('probVizUserCount') || '0');
+    const pageViews = parseInt(localStorage.getItem('probVizPageViews') || '0');
+    const firstVisit = localStorage.getItem('probVizFirstVisit');
+    const lastVisit = localStorage.getItem('probVizLastVisit');
+    
+    return {
+        uniqueUsers: userCount,
+        totalPageViews: pageViews,
+        firstVisit: firstVisit,
+        lastVisit: lastVisit
+    };
+}
+
+// Optional: Function to send count to server for centralized tracking
+function sendUserCountToServer(count) {
+    // This would typically send to your analytics service
+    // For now, we'll just use localStorage
+    console.log(`User count: ${count}`);
+}
+
+// Initialize user count when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    updateUserCount();
+    
+    // Add click tracking for the user count (shows stats)
+    const countElement = document.getElementById('user-count');
+    if (countElement) {
+        countElement.style.cursor = 'pointer';
+        countElement.title = 'Click to see usage statistics';
+        countElement.addEventListener('click', function() {
+            const stats = getUsageStats();
+            alert(`📊 ProbViz Usage Statistics:\n\n` +
+                  `👥 Unique Users: ${stats.uniqueUsers.toLocaleString()}\n` +
+                  `📄 Total Page Views: ${stats.totalPageViews.toLocaleString()}\n` +
+                  `📅 First Visit: ${stats.firstVisit ? new Date(stats.firstVisit).toLocaleDateString() : 'Unknown'}\n` +
+                  `🕒 Last Visit: ${stats.lastVisit ? new Date(stats.lastVisit).toLocaleDateString() : 'Unknown'}`);
+        });
+    }
+});
+
 // ===== NORMAL DISTRIBUTION =====
 function calculateNormal() {
     const type = document.getElementById("normal-type").value;
