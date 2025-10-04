@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Statistics & Probability Visualizer</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
     <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jstat/1.9.5/jstat.min.js"></script>
+    <script src="forms.js"></script>
     <script src="distributions.js"></script>
     <style>
         body {
@@ -45,49 +47,290 @@
             padding: 20px;
             border-radius: 0 0 8px 8px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            max-width: 500px;
+            max-width: 1200px;
             margin: 0 auto;
+        }
+        
+        .two-column-layout {
+            display: flex;
+            gap: 30px;
+            min-height: 600px;
+        }
+        
+        .left-column {
+            flex: 1;
+            max-width: 450px;
+            padding: 25px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            border-radius: 12px;
+            border: 1px solid #e9ecef;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .right-column {
+            flex: 1;
+            min-width: 500px;
+            padding: 25px;
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e9ecef;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        @media (max-width: 768px) {
+            .two-column-layout {
+                flex-direction: column;
+                gap: 20px;
+                min-height: auto;
+            }
+            .left-column, .right-column {
+                max-width: none;
+                min-width: auto;
+                flex: none;
+            }
+            .left-column {
+                order: 1;
+                padding: 15px;
+            }
+            .right-column {
+                order: 2;
+                padding: 15px;
+            }
+            .plot-box {
+                height: 400px;
+            }
         }
         label {
             display: block;
-            margin-top: 10px;
-            font-weight: bold;
-            color: #d35400;
+            margin-top: 15px;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 14px;
         }
         select, input {
             width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 14px;
+            padding: 12px 15px;
+            margin-top: 0;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 15px;
+            background: white;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+        select:focus, input:focus {
+            outline: none;
+            border-color: #f39c12;
+            box-shadow: 0 0 0 3px rgba(243, 156, 18, 0.1);
+            transform: translateY(-1px);
+        }
+        select:hover, input:hover {
+            border-color: #d35400;
         }
         button {
-            margin-top: 15px;
-            padding: 10px;
-            background: #e67e22;
+            margin-top: 25px;
+            padding: 15px 25px;
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
             color: white;
             border: none;
             width: 100%;
-            border-radius: 4px;
-            font-size: 15px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
+            position: relative;
+            overflow: hidden;
         }
         button:hover {
-            background: #d35400;
+            background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(243, 156, 18, 0.4);
+        }
+        button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 10px rgba(243, 156, 18, 0.3);
         }
         .plot-container {
-            margin-top: 25px;
+            margin-top: 0;
             display: flex;
             justify-content: center;
+            flex: 1;
+            min-height: 500px;
+            background: #fafbfc;
+            border-radius: 10px;
+            padding: 15px;
+            border: 1px solid #e9ecef;
+            overflow: hidden;
         }
         .plot-box {
-            width: 90%;
-            max-width: 800px;
+            width: 100%;
+            height: 100%;
+            max-height: 500px;
+            border-radius: 8px;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         #continuous-forms, #discrete-forms {
             margin-top: 10px;
+        }
+        
+        h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #f39c12;
+            color: #d35400;
+            position: relative;
+        }
+        
+        h3::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 30px;
+            height: 3px;
+            background: #d35400;
+        }
+        
+        .precision-control {
+            margin: 15px 0;
+            padding: 12px;
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            border-radius: 8px;
+            border-left: 4px solid #f39c12;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .precision-control label {
+            display: flex;
+            align-items: center;
+            margin: 0;
+            cursor: pointer;
+            font-size: 14px;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+        
+        .precision-control input[type="radio"] {
+            margin-right: 8px;
+            width: 16px;
+            height: 16px;
+            accent-color: #f39c12;
+        }
+        
+        .precision-options {
+            display: flex;
+            gap: 15px;
+            margin-top: 8px;
+        }
+        
+        .precision-option {
+            display: flex;
+            align-items: center;
+            font-size: 13px;
+            color: #34495e;
+        }
+        
+        .explain-panel {
+            margin-top: 20px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+        
+        .explain-header {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            color: white;
+            padding: 15px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+        
+        .explain-header:hover {
+            background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+        }
+        
+        .explain-toggle {
+            font-size: 18px;
+            transition: transform 0.3s ease;
+        }
+        
+        .explain-toggle.expanded {
+            transform: rotate(180deg);
+        }
+        
+        .explain-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        
+        .explain-content.expanded {
+            max-height: 1000px;
+        }
+        
+        .explain-body {
+            padding: 20px;
+        }
+        
+        .formula-section {
+            margin-bottom: 20px;
+        }
+        
+        .formula-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .formula-box {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #2c3e50;
+            overflow-x: auto;
+        }
+        
+        .interpretation {
+            background: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%);
+            border-left: 4px solid #27ae60;
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #2c3e50;
+        }
+        
+        .shaded-area {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            border-left: 4px solid #f39c12;
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #2c3e50;
         }
     </style>
 </head>
@@ -103,29 +346,71 @@
 
 <!-- Continuous Tab -->
 <div id="continuous" class="tab-content" style="display:block;">
-    <label>Select Distribution:</label>
-    <select id="continuous-select" onchange="showForm('continuous')">
-        <option value="">-- Choose --</option>
-        <option value="normal">Normal Distribution</option>
-        <option value="t">t-Distribution</option>
-    </select>
-    <div id="continuous-forms"></div>
-    <div class="plot-container">
-        <div id="continuous-plot" class="plot-box"></div>
+    <div class="two-column-layout">
+        <div class="left-column">
+            <h3 style="margin-top: 0; color: #d35400;">Distribution Parameters</h3>
+            <label>Select Distribution:</label>
+            <select id="continuous-select" onchange="showForm('continuous')">
+                <option value="">-- Choose --</option>
+                <option value="normal">Normal Distribution</option>
+                <option value="t">t-Distribution</option>
+            </select>
+            <div id="continuous-forms"></div>
+        </div>
+        <div class="right-column">
+            <h3 style="margin-top: 0; color: #d35400;">Visualization</h3>
+            <div class="plot-container">
+                <div id="continuous-plot" class="plot-box"></div>
+            </div>
+            <div class="explain-panel">
+                <div class="explain-header" onclick="toggleExplain('continuous')">
+                    <span>📚 Explanation & Formula</span>
+                    <span class="explain-toggle" id="continuous-toggle">▼</span>
+                </div>
+                <div class="explain-content" id="continuous-explain">
+                    <div class="explain-body" id="continuous-explain-body">
+                        <p style="text-align: center; color: #7f8c8d; font-style: italic;">
+                            Select a distribution and calculate a probability to see the explanation
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
 <!-- Discrete Tab -->
 <div id="discrete" class="tab-content">
-    <label>Select Distribution:</label>
-    <select id="discrete-select" onchange="showForm('discrete')">
-        <option value="">-- Choose --</option>
-        <option value="binomial">Binomial Distribution</option>
-        <option value="poisson">Poisson Distribution</option>
-    </select>
-    <div id="discrete-forms"></div>
-    <div class="plot-container">
-        <div id="discrete-plot" class="plot-box"></div>
+    <div class="two-column-layout">
+        <div class="left-column">
+            <h3 style="margin-top: 0; color: #d35400;">Distribution Parameters</h3>
+            <label>Select Distribution:</label>
+            <select id="discrete-select" onchange="showForm('discrete')">
+                <option value="">-- Choose --</option>
+                <option value="binomial">Binomial Distribution</option>
+                <option value="poisson">Poisson Distribution</option>
+            </select>
+            <div id="discrete-forms"></div>
+        </div>
+        <div class="right-column">
+            <h3 style="margin-top: 0; color: #d35400;">Visualization</h3>
+            <div class="plot-container">
+                <div id="discrete-plot" class="plot-box"></div>
+            </div>
+            <div class="explain-panel">
+                <div class="explain-header" onclick="toggleExplain('discrete')">
+                    <span>📚 Explanation & Formula</span>
+                    <span class="explain-toggle" id="discrete-toggle">▼</span>
+                </div>
+                <div class="explain-content" id="discrete-explain">
+                    <div class="explain-body" id="discrete-explain-body">
+                        <p style="text-align: center; color: #7f8c8d; font-style: italic;">
+                            Select a distribution and calculate a probability to see the explanation
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -152,97 +437,6 @@ function showForm(type) {
     }
 }
 
-function getFormHTML(dist, type) {
-    if (dist === "normal") {
-        return `
-            <label>Type:</label>
-            <select id="normal-type" onchange="toggleNSample()">
-                <option value="population">Population</option>
-                <option value="sampling">Sampling Distribution</option>
-            </select>
-            <label>Mean (μ):</label><input type="number" id="mean" step="any">
-            <label>Standard Deviation (σ):</label><input type="number" id="sd" step="any">
-            <div id="n-size-container" style="display:none;">
-                <label>Sample Size (n):</label><input type="number" id="n-size" step="any">
-            </div>
-            <label>Inequality:</label>
-            <select id="normal-inequality" onchange="toggleUpperBound('normal')">
-                <option value="lt">&lt;</option>
-                <option value="le">&le;</option>
-                <option value="gt">&gt;</option>
-                <option value="ge">&ge;</option>
-                <option value="between">Between</option>
-            </select>
-            <label id="normal-x-label">X Value:</label><input type="number" id="x-value" step="any">
-            <div id="upper-bound-container-normal" style="display:none;">
-                <label id="normal-upper-label">Upper Bound:</label><input type="number" id="upper-bound" step="any">
-            </div>
-            <button onclick="calculateNormal()">Calculate Probability</button>
-            <div id="result"></div>
-        `;
-    }
-    if (dist === "t") {
-        return `
-            <label>Degrees of Freedom (df):</label><input type="number" id="t-df" step="any">
-            <label>Inequality:</label>
-            <select id="t-inequality" onchange="toggleUpperBound('t')">
-                <option value="lt">&lt;</option>
-                <option value="le">&le;</option>
-                <option value="gt">&gt;</option>
-                <option value="ge">&ge;</option>
-                <option value="between">Between</option>
-            </select>
-            <label id="t-x-label">X Value:</label><input type="number" id="t-x-value" step="any">
-            <div id="upper-bound-container-t" style="display:none;">
-                <label id="t-upper-label">Upper Bound:</label><input type="number" id="t-upper-bound" step="any">
-            </div>
-            <button onclick="calculateT()">Calculate Probability</button>
-            <div id="t-result"></div>
-        `;
-    }
-    if (dist === "binomial") {
-        return `
-            <label>Number of Trials (n):</label><input type="number" id="binom-n">
-            <label>Probability of Success (p):</label><input type="number" id="binom-p" step="any">
-            <label>Inequality:</label>
-            <select id="binom-inequality" onchange="toggleUpperBound('binom')">
-                <option value="eq">=</option>
-                <option value="lt">&lt;</option>
-                <option value="le">&le;</option>
-                <option value="gt">&gt;</option>
-                <option value="ge">&ge;</option>
-                <option value="between">Between</option>
-            </select>
-            <label id="binom-x-label">X Value:</label><input type="number" id="binom-x">
-            <div id="upper-bound-container-binom" style="display:none;">
-                <label id="binom-upper-label">Upper Bound:</label><input type="number" id="binom-upper">
-            </div>
-            <button onclick="calculateBinomial()">Calculate Probability</button>
-            <div id="binom-result"></div>
-        `;
-    }
-    if (dist === "poisson") {
-        return `
-            <label>Lambda (λ):</label><input type="number" id="pois-lambda" step="any">
-            <label>Inequality:</label>
-            <select id="pois-inequality" onchange="toggleUpperBound('pois')">
-                <option value="eq">=</option>
-                <option value="lt">&lt;</option>
-                <option value="le">&le;</option>
-                <option value="gt">&gt;</option>
-                <option value="ge">&ge;</option>
-                <option value="between">Between</option>
-            </select>
-            <label id="pois-x-label">X Value:</label><input type="number" id="pois-x">
-            <div id="upper-bound-container-pois" style="display:none;">
-                <label id="pois-upper-label">Upper Bound:</label><input type="number" id="pois-upper">
-            </div>
-            <button onclick="calculatePoisson()">Calculate Probability</button>
-            <div id="pois-result"></div>
-        `;
-    }
-    return "";
-}
 
 function toggleNSample() {
     const type = document.getElementById("normal-type").value;
@@ -262,6 +456,19 @@ function toggleUpperBound(dist) {
     } else {
         container.style.display = "none";
         if (xLabel) xLabel.textContent = "X Value:";
+    }
+}
+
+function toggleExplain(type) {
+    const content = document.getElementById(type + "-explain");
+    const toggle = document.getElementById(type + "-toggle");
+    
+    if (content.classList.contains("expanded")) {
+        content.classList.remove("expanded");
+        toggle.classList.remove("expanded");
+    } else {
+        content.classList.add("expanded");
+        toggle.classList.add("expanded");
     }
 }
 </script>
