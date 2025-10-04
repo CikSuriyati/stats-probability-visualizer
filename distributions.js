@@ -74,6 +74,35 @@ function sendUserCountToServer(count) {
     console.log(`User count: ${count}`);
 }
 
+// Function to restore welcome message
+function restoreWelcomeMessage(type) {
+    const plotId = type === 'continuous' ? 'continuous-plot' : 'discrete-plot';
+    const welcomeId = type === 'continuous' ? 'welcome-message' : 'welcome-message-discrete';
+    
+    const plotBox = document.getElementById(plotId);
+    const existingWelcome = document.getElementById(welcomeId);
+    
+    // Only add welcome message if it doesn't exist
+    if (!existingWelcome) {
+        const welcomeHTML = `
+            <div id="${welcomeId}" style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; text-align: center; color: #7f8c8d; padding: 20px;">
+                <div style="font-size: 48px; margin-bottom: 20px;">📊</div>
+                <h4 style="color: #34495e; margin-bottom: 15px; font-size: 20px;">Welcome to ProbViz!</h4>
+                <p style="font-size: 16px; line-height: 1.5; margin-bottom: 20px;">
+                    Select a distribution from the left panel and enter your values to see beautiful probability visualizations come to life!
+                </p>
+                <div class="welcome-tags" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 20px;">
+                    <span style="background: #e8f5e8; color: #27ae60; padding: 8px 12px; border-radius: 20px; font-size: 14px; font-weight: 500;">📈 Normal Distribution</span>
+                    <span style="background: #fff3cd; color: #f39c12; padding: 8px 12px; border-radius: 20px; font-size: 14px; font-weight: 500;">📊 Binomial Distribution</span>
+                    <span style="background: #e8f4fd; color: #3498db; padding: 8px 12px; border-radius: 20px; font-size: 14px; font-weight: 500;">📉 Poisson Distribution</span>
+                    <span style="background: #f0e6ff; color: #9b59b6; padding: 8px 12px; border-radius: 20px; font-size: 14px; font-weight: 500;">📋 t-Distribution</span>
+                </div>
+            </div>
+        `;
+        plotBox.innerHTML = welcomeHTML;
+    }
+}
+
 // Initialize user count when page loads
 document.addEventListener('DOMContentLoaded', function() {
     updateUserCount();
@@ -196,6 +225,12 @@ function plotNormal(mean, sd, x, upper, inequality) {
     let trace1 = { x: xValues, y: yValues, type: 'scatter', mode: 'lines', name: 'PDF' };
     let trace2 = { x: highlightX, y: highlightY, type: 'scatter', mode: 'lines', fill: 'tozeroy', name: 'Probability Area' };
 
+    // Remove welcome message completely and show plot
+    const welcomeMsg = document.getElementById('welcome-message');
+    if (welcomeMsg) {
+        welcomeMsg.remove();
+    }
+    
     Plotly.newPlot('continuous-plot', [trace1, trace2], { title: 'Normal Distribution', margin: { t: 30 } });
 }
 
@@ -277,6 +312,12 @@ function plotT(df, x, upper, inequality) {
     let trace1 = { x: xValues, y: yValues, type: 'scatter', mode: 'lines', name: 'PDF' };
     let trace2 = { x: highlightX, y: highlightY, type: 'scatter', mode: 'lines', fill: 'tozeroy', name: 'Probability Area' };
 
+    // Remove welcome message completely and show plot
+    const welcomeMsg = document.getElementById('welcome-message');
+    if (welcomeMsg) {
+        welcomeMsg.remove();
+    }
+    
     Plotly.newPlot('continuous-plot', [trace1, trace2], { title: 't-Distribution', margin: { t: 30 } });
 }
 
@@ -409,6 +450,12 @@ function plotBinomial(n, p, x, upper, inequality) {
     let trace1 = { x: xValues, y: yValues, type: 'bar', name: 'PMF' };
     let trace2 = { x: highlightX, y: highlightY, type: 'bar', name: 'Probability Area', marker: { color: 'orange' } };
 
+    // Remove welcome message completely and show plot
+    const welcomeMsg = document.getElementById('welcome-message-discrete');
+    if (welcomeMsg) {
+        welcomeMsg.remove();
+    }
+    
     Plotly.newPlot('discrete-plot', [trace1, trace2], { title: 'Binomial Distribution', margin: { t: 30 } });
 }
 
@@ -517,6 +564,12 @@ function plotPoisson(lambda, x, upper, inequality) {
     let trace1 = { x: xValues, y: yValues, type: 'bar', name: 'PMF' };
     let trace2 = { x: highlightX, y: highlightY, type: 'bar', name: 'Probability Area', marker: { color: 'orange' } };
 
+    // Remove welcome message completely and show plot
+    const welcomeMsg = document.getElementById('welcome-message-discrete');
+    if (welcomeMsg) {
+        welcomeMsg.remove();
+    }
+    
     Plotly.newPlot('discrete-plot', [trace1, trace2], { title: 'Poisson Distribution', margin: { t: 30 } });
 }
 

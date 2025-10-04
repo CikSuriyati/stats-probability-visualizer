@@ -92,6 +92,12 @@
                 margin: 0;
             }
             
+            .tagline-quote {
+                font-size: 16px !important;
+                margin: -5px 0 15px 0 !important;
+                padding: 0 10px;
+            }
+            
             .tabs {
                 flex-direction: column;
                 margin: 10px;
@@ -146,6 +152,30 @@
                 max-height: 300px;
             }
             
+            #welcome-message, #welcome-message-discrete {
+                padding: 15px !important;
+            }
+            
+            #welcome-message h4, #welcome-message-discrete h4 {
+                font-size: 18px !important;
+                margin-bottom: 12px !important;
+            }
+            
+            #welcome-message p, #welcome-message-discrete p {
+                font-size: 14px !important;
+                margin-bottom: 15px !important;
+            }
+            
+            #welcome-message .welcome-tags, #welcome-message-discrete .welcome-tags {
+                gap: 8px !important;
+                margin-top: 15px !important;
+            }
+            
+            #welcome-message .welcome-tags span, #welcome-message-discrete .welcome-tags span {
+                font-size: 12px !important;
+                padding: 6px 10px !important;
+            }
+            
             .explain-panel {
                 margin-top: 15px;
             }
@@ -184,6 +214,12 @@
                 padding: 10px 5px;
             }
             
+            .tagline-quote {
+                font-size: 14px !important;
+                margin: -5px 0 12px 0 !important;
+                padding: 0 5px;
+            }
+            
             .tab {
                 padding: 10px 12px;
                 font-size: 13px;
@@ -206,6 +242,30 @@
             .plot-box {
                 height: 250px;
                 max-height: 250px;
+            }
+            
+            #welcome-message, #welcome-message-discrete {
+                padding: 12px !important;
+            }
+            
+            #welcome-message h4, #welcome-message-discrete h4 {
+                font-size: 16px !important;
+                margin-bottom: 10px !important;
+            }
+            
+            #welcome-message p, #welcome-message-discrete p {
+                font-size: 13px !important;
+                margin-bottom: 12px !important;
+            }
+            
+            #welcome-message .welcome-tags, #welcome-message-discrete .welcome-tags {
+                gap: 6px !important;
+                margin-top: 12px !important;
+            }
+            
+            #welcome-message .welcome-tags span, #welcome-message-discrete .welcome-tags span {
+                font-size: 11px !important;
+                padding: 5px 8px !important;
             }
             
             .explain-header {
@@ -284,7 +344,7 @@
             }
             
             .precision-options {
-                gap: 20px;
+                gap: 10px;
                 margin-top: 10px;
             }
             
@@ -323,7 +383,7 @@
             }
             
             .precision-options {
-                gap: 15px;
+                gap: 8px;
                 margin-top: 8px;
             }
             
@@ -437,7 +497,7 @@
         
         .precision-options {
             display: flex;
-            gap: 15px;
+            gap: 8px;
             margin-top: 8px;
         }
         
@@ -546,6 +606,9 @@
 <body>
 
 <h1>Statistics & Probability Visualizer</h1>
+<div class="tagline-quote" style="text-align: center; margin: -5px 0 20px 0; color: #7f8c8d; font-style: italic; font-size: 18px;">
+    "See the curve, understand the concept."
+</div>
 
 <!-- Tabs -->
 <div class="tabs">
@@ -569,7 +632,21 @@
         <div class="right-column">
             <h3 style="margin-top: 0; color: #d35400;">Visualization</h3>
             <div class="plot-container">
-                <div id="continuous-plot" class="plot-box"></div>
+                <div id="continuous-plot" class="plot-box">
+                    <div id="welcome-message" style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; text-align: center; color: #7f8c8d; padding: 20px;">
+                        <div style="font-size: 48px; margin-bottom: 20px;">📊</div>
+                        <h4 style="color: #34495e; margin-bottom: 15px; font-size: 20px;">Welcome to ProbViz!</h4>
+                        <p style="font-size: 16px; line-height: 1.5; margin-bottom: 20px;">
+                            Select a distribution from the left panel and enter your values to see beautiful probability visualizations come to life!
+                        </p>
+                        <div class="welcome-tags" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 20px;">
+                            <span style="background: #e8f5e8; color: #27ae60; padding: 8px 12px; border-radius: 20px; font-size: 14px; font-weight: 500;">📈 Normal Distribution</span>
+                            <span style="background: #fff3cd; color: #f39c12; padding: 8px 12px; border-radius: 20px; font-size: 14px; font-weight: 500;">📊 Binomial Distribution</span>
+                            <span style="background: #e8f4fd; color: #3498db; padding: 8px 12px; border-radius: 20px; font-size: 14px; font-weight: 500;">📉 Poisson Distribution</span>
+                            <span style="background: #f0e6ff; color: #9b59b6; padding: 8px 12px; border-radius: 20px; font-size: 14px; font-weight: 500;">📋 t-Distribution</span>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="explain-panel">
                 <div class="explain-header" onclick="toggleExplain('continuous')">
@@ -604,7 +681,21 @@
         <div class="right-column">
             <h3 style="margin-top: 0; color: #d35400;">Visualization</h3>
             <div class="plot-container">
-                <div id="discrete-plot" class="plot-box"></div>
+                <div id="discrete-plot" class="plot-box">
+                    <div id="welcome-message-discrete" style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; text-align: center; color: #7f8c8d; padding: 20px;">
+                        <div style="font-size: 48px; margin-bottom: 20px;">📊</div>
+                        <h4 style="color: #34495e; margin-bottom: 15px; font-size: 20px;">Welcome to ProbViz!</h4>
+                        <p style="font-size: 16px; line-height: 1.5; margin-bottom: 20px;">
+                            Select a distribution from the left panel and enter your values to see beautiful probability visualizations come to life!
+                        </p>
+                        <div class="welcome-tags" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 20px;">
+                            <span style="background: #e8f5e8; color: #27ae60; padding: 8px 12px; border-radius: 20px; font-size: 14px; font-weight: 500;">📈 Normal Distribution</span>
+                            <span style="background: #fff3cd; color: #f39c12; padding: 8px 12px; border-radius: 20px; font-size: 14px; font-weight: 500;">📊 Binomial Distribution</span>
+                            <span style="background: #e8f4fd; color: #3498db; padding: 8px 12px; border-radius: 20px; font-size: 14px; font-weight: 500;">📉 Poisson Distribution</span>
+                            <span style="background: #f0e6ff; color: #9b59b6; padding: 8px 12px; border-radius: 20px; font-size: 14px; font-weight: 500;">📋 t-Distribution</span>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="explain-panel">
                 <div class="explain-header" onclick="toggleExplain('discrete')">
@@ -633,6 +724,9 @@ function openTab(tabName) {
         document.querySelectorAll('.tab')[1].classList.add('active');
     }
     document.getElementById(tabName).style.display = 'block';
+    
+    // Restore welcome message for the active tab
+    restoreWelcomeMessage(tabName);
 }
 
 function showForm(type) {
