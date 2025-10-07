@@ -222,8 +222,139 @@ function plotNormal(mean, sd, x, upper, inequality) {
         }
     });
 
-    let trace1 = { x: xValues, y: yValues, type: 'scatter', mode: 'lines', name: 'PDF' };
-    let trace2 = { x: highlightX, y: highlightY, type: 'scatter', mode: 'lines', fill: 'tozeroy', name: 'Probability Area' };
+    // Calculate Z-score for the critical value
+    const zScore = (x - mean) / sd;
+    
+    // Create traces
+    let trace1 = { 
+        x: xValues, 
+        y: yValues, 
+        type: 'scatter', 
+        mode: 'lines', 
+        name: 'PDF',
+        line: { color: '#2E86AB', width: 3 }
+    };
+    
+    let trace2 = { 
+        x: highlightX, 
+        y: highlightY, 
+        type: 'scatter', 
+        mode: 'lines', 
+        fill: 'tozeroy', 
+        name: 'Probability Area',
+        line: { color: '#A23B72', width: 2 },
+        fillcolor: 'rgba(162, 59, 114, 0.3)'
+    };
+
+    // Create annotations for better labeling
+    let annotations = [];
+    
+    // Add Z-score annotation with arrow
+    const maxY = Math.max(...yValues);
+    const zScoreY = jStat.normal.pdf(x, mean, sd);
+    
+    annotations.push({
+        x: x,
+        y: zScoreY + maxY * 0.1,
+        text: `Z = ${zScore.toFixed(2)}`,
+        showarrow: true,
+        arrowhead: 2,
+        arrowcolor: '#2c3e50',
+        arrowwidth: 2,
+        ax: 0,
+        ay: -30,
+        font: { color: '#2c3e50', size: 14, family: 'Arial, sans-serif' },
+        bgcolor: 'rgba(255, 255, 255, 0.8)',
+        bordercolor: '#2c3e50',
+        borderwidth: 1
+    });
+    
+    // Add probability labels based on inequality type
+    if (inequality === "lt" || inequality === "le") {
+        // Left tail probability
+        const leftAreaX = mean - 2 * sd;
+        const leftAreaY = maxY * 0.6;
+        annotations.push({
+            x: leftAreaX,
+            y: leftAreaY,
+            text: `P(Z ≤ ${zScore.toFixed(2)})`,
+            showarrow: false,
+            font: { color: '#A23B72', size: 16, family: 'Arial, sans-serif' },
+            bgcolor: 'rgba(255, 255, 255, 0.9)',
+            bordercolor: '#A23B72',
+            borderwidth: 2
+        });
+        
+        // Right tail probability
+        const rightAreaX = mean + 2 * sd;
+        const rightAreaY = maxY * 0.6;
+        annotations.push({
+            x: rightAreaX,
+            y: rightAreaY,
+            text: `P(Z > ${zScore.toFixed(2)})`,
+            showarrow: false,
+            font: { color: '#2E86AB', size: 16, family: 'Arial, sans-serif' },
+            bgcolor: 'rgba(255, 255, 255, 0.9)',
+            bordercolor: '#2E86AB',
+            borderwidth: 2
+        });
+    } else if (inequality === "gt" || inequality === "ge") {
+        // Right tail probability
+        const rightAreaX = mean + 2 * sd;
+        const rightAreaY = maxY * 0.6;
+        annotations.push({
+            x: rightAreaX,
+            y: rightAreaY,
+            text: `P(Z ≥ ${zScore.toFixed(2)})`,
+            showarrow: false,
+            font: { color: '#A23B72', size: 16, family: 'Arial, sans-serif' },
+            bgcolor: 'rgba(255, 255, 255, 0.9)',
+            bordercolor: '#A23B72',
+            borderwidth: 2
+        });
+        
+        // Left tail probability
+        const leftAreaX = mean - 2 * sd;
+        const leftAreaY = maxY * 0.6;
+        annotations.push({
+            x: leftAreaX,
+            y: leftAreaY,
+            text: `P(Z < ${zScore.toFixed(2)})`,
+            showarrow: false,
+            font: { color: '#2E86AB', size: 16, family: 'Arial, sans-serif' },
+            bgcolor: 'rgba(255, 255, 255, 0.9)',
+            bordercolor: '#2E86AB',
+            borderwidth: 2
+        });
+    } else if (inequality === "between") {
+        const zScoreUpper = (upper - mean) / sd;
+        const betweenAreaX = mean;
+        const betweenAreaY = maxY * 0.7;
+        annotations.push({
+            x: betweenAreaX,
+            y: betweenAreaY,
+            text: `P(${zScore.toFixed(2)} ≤ Z ≤ ${zScoreUpper.toFixed(2)})`,
+            showarrow: false,
+            font: { color: '#A23B72', size: 16, family: 'Arial, sans-serif' },
+            bgcolor: 'rgba(255, 255, 255, 0.9)',
+            bordercolor: '#A23B72',
+            borderwidth: 2
+        });
+    }
+
+    // Add vertical line at the critical value
+    annotations.push({
+        x: x,
+        y: 0,
+        xref: 'x',
+        yref: 'y',
+        showarrow: false,
+        line: {
+            color: '#2c3e50',
+            width: 2,
+            dash: 'dash'
+        }
+    });
 
     // Remove welcome message completely and show plot
     const welcomeMsg = document.getElementById('welcome-message');
@@ -231,7 +362,40 @@ function plotNormal(mean, sd, x, upper, inequality) {
         welcomeMsg.remove();
     }
     
-    Plotly.newPlot('continuous-plot', [trace1, trace2], { title: 'Normal Distribution', margin: { t: 30 } });
+    const layout = {
+        title: {
+            text: 'Area under the curve in a standard normal distribution',
+            font: { size: 18, color: '#2c3e50', family: 'Arial, sans-serif' }
+        },
+        xaxis: {
+            title: 'Z',
+            showgrid: true,
+            gridcolor: '#e0e0e0',
+            zeroline: true,
+            zerolinecolor: '#2c3e50',
+            zerolinewidth: 2
+        },
+        yaxis: {
+            title: 'Probability Density',
+            showgrid: true,
+            gridcolor: '#e0e0e0',
+            zeroline: false
+        },
+        margin: { t: 60, r: 20, b: 60, l: 60 },
+        plot_bgcolor: 'white',
+        paper_bgcolor: 'white',
+        annotations: annotations,
+        showlegend: true,
+        legend: {
+            x: 0.02,
+            y: 0.98,
+            bgcolor: 'rgba(255, 255, 255, 0.8)',
+            bordercolor: '#e0e0e0',
+            borderwidth: 1
+        }
+    };
+    
+    Plotly.newPlot('continuous-plot', [trace1, trace2], layout);
 }
 
 // ===== T-DISTRIBUTION =====
