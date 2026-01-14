@@ -4,16 +4,19 @@ body {
     margin: 0;
     padding: 0;
 }
+
 h1 {
     text-align: center;
     padding: 20px;
     color: #d35400;
 }
+
 .tabs {
     display: flex;
     justify-content: center;
     margin-top: 10px;
 }
+
 .tab {
     padding: 10px 20px;
     background: #f39c12;
@@ -23,19 +26,22 @@ h1 {
     cursor: pointer;
     transition: background 0.3s;
 }
+
 .tab:hover {
     background: #e67e22;
 }
+
 .tab.active {
     background: #d35400;
     font-weight: bold;
 }
+
 .tab-content {
     display: none;
     background: white;
     padding: 20px;
     border-radius: 0 0 8px 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     max-width: 1200px;
     margin: 0 auto;
 }
@@ -53,7 +59,7 @@ h1 {
     background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
     border-radius: 12px;
     border: 1px solid #e9ecef;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .right-column {
@@ -63,7 +69,7 @@ h1 {
     background: white;
     border-radius: 12px;
     border: 1px solid #e9ecef;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -73,25 +79,25 @@ h1 {
     body {
         overflow-x: hidden;
     }
-    
+
     h1 {
         font-size: 24px;
         padding: 15px 10px;
         margin: 0;
     }
-    
+
     .tagline-quote {
         font-size: 16px !important;
         margin: -5px 0 15px 0 !important;
         padding: 0 10px;
     }
-    
+
     .tabs {
         flex-direction: column;
         margin: 10px;
         gap: 5px;
     }
-    
+
     .tab {
         margin-right: 0;
         margin-bottom: 5px;
@@ -100,93 +106,100 @@ h1 {
         border-radius: 8px;
         font-size: 14px;
     }
-    
+
     .tab-content {
         margin: 0 10px 20px 10px;
         padding: 15px;
         border-radius: 8px;
         max-width: none;
     }
-    
+
     .two-column-layout {
         flex-direction: column;
         gap: 15px;
         min-height: auto;
     }
-    
-    .left-column, .right-column {
+
+    .left-column,
+    .right-column {
         max-width: none;
         min-width: auto;
         flex: none;
         padding: 15px;
         margin: 0;
     }
-    
+
     .left-column {
         order: 1;
     }
-    
+
     .right-column {
         order: 2;
     }
-    
+
     .plot-container {
         min-height: 300px;
         padding: 10px;
     }
-    
+
     .plot-box {
         height: 300px;
         max-height: 300px;
     }
-    
-    #welcome-message, #welcome-message-discrete {
+
+    #welcome-message,
+    #welcome-message-discrete {
         padding: 15px !important;
     }
-    
-    #welcome-message h4, #welcome-message-discrete h4 {
+
+    #welcome-message h4,
+    #welcome-message-discrete h4 {
         font-size: 18px !important;
         margin-bottom: 12px !important;
     }
-    
-    #welcome-message p, #welcome-message-discrete p {
+
+    #welcome-message p,
+    #welcome-message-discrete p {
         font-size: 14px !important;
         margin-bottom: 15px !important;
     }
-    
-    #welcome-message .welcome-tags, #welcome-message-discrete .welcome-tags {
+
+    #welcome-message .welcome-tags,
+    #welcome-message-discrete .welcome-tags {
         gap: 8px !important;
         margin-top: 15px !important;
     }
-    
-    #welcome-message .welcome-tags span, #welcome-message-discrete .welcome-tags span {
+
+    #welcome-message .welcome-tags span,
+    #welcome-message-discrete .welcome-tags span {
         font-size: 12px !important;
         padding: 6px 10px !important;
     }
-    
+
     .explain-panel {
         margin-top: 15px;
     }
-    
+
     .explain-header {
         padding: 12px 15px;
         font-size: 14px;
     }
-    
+
     .explain-body {
         padding: 15px;
     }
-    
+
     .formula-box {
         font-size: 12px;
         padding: 10px;
     }
-    
-    .interpretation, .shaded-area {
+
+    .interpretation,
+    .shaded-area {
         font-size: 13px;
         padding: 12px;
     }
-    
+
     footer {
         position: relative;
         bottom: auto;
@@ -201,108 +214,117 @@ h1 {
         font-size: 20px;
         padding: 10px 5px;
     }
-    
+
     .tagline-quote {
         font-size: 14px !important;
         margin: -5px 0 12px 0 !important;
         padding: 0 5px;
     }
-    
+
     .tab {
         padding: 10px 12px;
         font-size: 13px;
     }
-    
+
     .tab-content {
         margin: 0 5px 15px 5px;
         padding: 10px;
     }
-    
-    .left-column, .right-column {
+
+    .left-column,
+    .right-column {
         padding: 10px;
     }
-    
+
     .plot-container {
         min-height: 250px;
         padding: 8px;
     }
-    
+
     .plot-box {
         height: 250px;
         max-height: 250px;
     }
-    
-    #welcome-message, #welcome-message-discrete {
+
+    #welcome-message,
+    #welcome-message-discrete {
         padding: 12px !important;
     }
-    
-    #welcome-message h4, #welcome-message-discrete h4 {
+
+    #welcome-message h4,
+    #welcome-message-discrete h4 {
         font-size: 16px !important;
         margin-bottom: 10px !important;
     }
-    
-    #welcome-message p, #welcome-message-discrete p {
+
+    #welcome-message p,
+    #welcome-message-discrete p {
         font-size: 13px !important;
         margin-bottom: 12px !important;
     }
-    
-    #welcome-message .welcome-tags, #welcome-message-discrete .welcome-tags {
+
+    #welcome-message .welcome-tags,
+    #welcome-message-discrete .welcome-tags {
         gap: 6px !important;
         margin-top: 12px !important;
     }
-    
-    #welcome-message .welcome-tags span, #welcome-message-discrete .welcome-tags span {
+
+    #welcome-message .welcome-tags span,
+    #welcome-message-discrete .welcome-tags span {
         font-size: 11px !important;
         padding: 5px 8px !important;
     }
-    
+
     .explain-header {
         padding: 10px 12px;
         font-size: 13px;
     }
-    
+
     .explain-body {
         padding: 12px;
     }
-    
+
     .formula-box {
         font-size: 11px;
         padding: 8px;
     }
-    
-    .interpretation, .shaded-area {
+
+    .interpretation,
+    .shaded-area {
         font-size: 12px;
         padding: 10px;
     }
-    
+
     footer {
         font-size: 10px;
         padding: 8px;
     }
-    
+
     #about {
         padding: 10px;
     }
-    
+
     #about h2 {
         font-size: 24px !important;
         margin-bottom: 20px !important;
     }
-    
+
     #about h3 {
         font-size: 18px !important;
         margin-bottom: 15px !important;
     }
-    
-    #about p, #about li {
+
+    #about p,
+    #about li {
         font-size: 14px !important;
     }
-    
+
     #about .grid {
         grid-template-columns: 1fr !important;
         gap: 15px !important;
     }
 }
+
 label {
     display: block;
     margin-top: 15px;
@@ -311,7 +333,9 @@ label {
     color: #2c3e50;
     font-size: 14px;
 }
-select, input {
+
+select,
+input {
     width: 100%;
     padding: 12px 15px;
     margin-top: 0;
@@ -321,114 +345,126 @@ select, input {
     background: white;
     transition: all 0.3s ease;
     box-sizing: border-box;
-    min-height: 44px; /* Touch-friendly minimum height */
+    min-height: 44px;
+    /* Touch-friendly minimum height */
 }
 
 @media (max-width: 768px) {
-    select, input {
+
+    select,
+    input {
         padding: 14px 15px;
-        font-size: 16px; /* Prevents zoom on iOS */
+        font-size: 16px;
+        /* Prevents zoom on iOS */
         min-height: 48px;
     }
-    
+
     label {
         font-size: 15px;
         margin-top: 18px;
         margin-bottom: 8px;
     }
-    
+
     button {
         padding: 16px 25px;
         font-size: 16px;
         min-height: 48px;
         margin-top: 20px;
     }
-    
+
     .precision-control {
         margin: 18px 0;
         padding: 15px;
     }
-    
+
     .precision-control label {
         font-size: 15px;
         margin: 0;
     }
-    
+
     .precision-options {
         gap: 10px;
         margin-top: 10px;
     }
-    
+
     .precision-option {
         font-size: 14px;
     }
-    
+
     #about {
         padding: 15px;
     }
-    
+
     #about h2 {
         font-size: 26px !important;
         margin-bottom: 25px !important;
     }
-    
+
     #about h3 {
         font-size: 20px !important;
         margin-bottom: 18px !important;
     }
-    
-    #about p, #about li {
+
+    #about p,
+    #about li {
         font-size: 15px !important;
     }
 }
 
 @media (max-width: 480px) {
-    select, input {
+
+    select,
+    input {
         padding: 12px 12px;
         font-size: 15px;
         min-height: 44px;
     }
-    
+
     label {
         font-size: 14px;
         margin-top: 15px;
         margin-bottom: 6px;
     }
-    
+
     button {
         padding: 14px 20px;
         font-size: 15px;
         min-height: 44px;
         margin-top: 18px;
     }
-    
+
     .precision-control {
         margin: 15px 0;
         padding: 12px;
     }
-    
+
     .precision-control label {
         font-size: 14px;
     }
-    
+
     .precision-options {
         gap: 8px;
         margin-top: 8px;
     }
-    
+
     .precision-option {
         font-size: 13px;
     }
 }
-select:focus, input:focus {
+
+select:focus,
+input:focus {
     outline: none;
     border-color: #f39c12;
     box-shadow: 0 0 0 3px rgba(243, 156, 18, 0.1);
     transform: translateY(-1px);
 }
-select:hover, input:hover {
+
+select:hover,
+input:hover {
     border-color: #d35400;
 }
+
 button {
     margin-top: 25px;
     padding: 15px 25px;
@@ -445,15 +481,18 @@ button {
     position: relative;
     overflow: hidden;
 }
+
 button:hover {
     background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(243, 156, 18, 0.4);
 }
+
 button:active {
     transform: translateY(0);
     box-shadow: 0 2px 10px rgba(243, 156, 18, 0.3);
 }
+
 .plot-container {
     margin-top: 0;
     display: flex;
@@ -466,15 +505,18 @@ button:active {
     border: 1px solid #e9ecef;
     overflow: hidden;
 }
+
 .plot-box {
     width: 100%;
     height: 100%;
     max-height: 500px;
     border-radius: 8px;
     background: white;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
-#continuous-forms, #discrete-forms {
+
+#continuous-forms,
+#discrete-forms {
     margin-top: 10px;
 }
 
@@ -504,7 +546,7 @@ h3::after {
     background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
     border-radius: 8px;
     border-left: 4px solid #f39c12;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .precision-control label {
@@ -542,7 +584,7 @@ h3::after {
     background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
     border-radius: 10px;
     border: 1px solid #e9ecef;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     overflow: hidden;
 }
 
@@ -629,4 +671,47 @@ h3::after {
     font-size: 14px;
     line-height: 1.6;
     color: #2c3e50;
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    padding: 12px 0;
+    font-size: 13px;
+    color: #a55b26;
+    background: rgba(255, 248, 240, 0.9);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-top: 1px solid rgba(211, 84, 0, 0.1);
+    z-index: 1000;
+}
+
+#user-count {
+    display: inline-flex;
+    align-items: center;
+    background: rgba(243, 156, 18, 0.1);
+    color: #d35400;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+    margin-left: 5px;
+    border: 1px solid rgba(243, 156, 18, 0.2);
+    transition: all 0.3s ease;
+    vertical-align: middle;
+}
+
+/* Hide GoatCounter's default floating box/iframe */
+#user-count iframe,
+#user-count .goatcounter-visit-count {
+    display: none !important;
+}
+
+/* Ensure content doesn't get covered by fixed footer */
+@media (max-width: 768px) {
+    body {
+        padding-bottom: 80px !important;
+    }
 }

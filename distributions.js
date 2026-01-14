@@ -32,18 +32,20 @@ function updateUserCount() {
     }
 
     // Try to get the global count from GoatCounter
-    // We wait a bit to ensure the goatcounter script has loaded
+    // We wait for the script and use a cleaner approach
     setTimeout(() => {
         if (window.goatcounter && window.goatcounter.visit_count) {
             // This will fetch the global visitor count
-            // We use the 'no_onload' and 'append' options to integrate with our UI
+            // We use no_onload to prevent automatic injection, then handle it ourselves if we can
+            // OR we just let it append but we've added CSS to keep it neat
             window.goatcounter.visit_count({
                 append: '#user-count',
-                attr: { 'data-label': 'Global Users: ' }
+                no_onload: false, // Let it load but our CSS will hide the iframe
+                attr: { 'data-label': '' } // Remove the label so it doesn't say "Views for this page"
             });
             console.log("GoatCounter global stats requested");
         }
-    }, 2000);
+    }, 1500);
 
     // Track additional metrics
     trackUsageMetrics();
