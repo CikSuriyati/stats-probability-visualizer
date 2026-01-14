@@ -31,19 +31,39 @@ function updateUserCount() {
         }, 300);
     }
 
+    // Display the local count in the footer initially
+    if (countElement) {
+        countElement.textContent = userCount.toLocaleString();
+    }
+
     // Try to get the global count from GoatCounter
-    // We wait for the script and use a cleaner approach
     setTimeout(() => {
         if (window.goatcounter && window.goatcounter.visit_count) {
-            // This will fetch the global visitor count
-            // We use no_onload to prevent automatic injection, then handle it ourselves if we can
-            // OR we just let it append but we've added CSS to keep it neat
+            // 1. Update footer with global unique users
             window.goatcounter.visit_count({
                 append: '#user-count',
-                no_onload: false, // Let it load but our CSS will hide the iframe
-                attr: { 'data-label': '' } // Remove the label so it doesn't say "Views for this page"
+                no_onload: false,
+                attr: { 'data-label': '' }
             });
-            console.log("GoatCounter global stats requested");
+
+            // 2. Update About page with global unique users
+            window.goatcounter.visit_count({
+                append: '#about-unique-users',
+                no_onload: false,
+                attr: { 'data-label': '' }
+            });
+
+            // 3. Update About page with global total views
+            // Note: GoatCounter's visit_count usually returns unique visitors by default.
+            // For total views, we try 'type: html' or similar if supported, 
+            // but for now we'll sync it with the count we get.
+            window.goatcounter.visit_count({
+                append: '#about-page-views',
+                no_onload: false,
+                attr: { 'data-label': '' }
+            });
+
+            console.log("GoatCounter global stats requested for footer and About page");
         }
     }, 1500);
 
