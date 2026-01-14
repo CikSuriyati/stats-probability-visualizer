@@ -39,33 +39,40 @@ function updateUserCount() {
     // Try to get the global count from GoatCounter
     setTimeout(() => {
         if (window.goatcounter && window.goatcounter.visit_count) {
+            console.log("Fetching GoatCounter stats...");
+
             // 1. Update footer with global unique users
             window.goatcounter.visit_count({
+                append: false, // Replace "Loading..." text
+                no_onload: true,
+                attr: { 'data-label': '' }
+            });
+            // The above default call uses the current page path and appends to the script's own position 
+            // OR we can be explicit:
+            window.goatcounter.visit_count({
                 append: '#user-count',
-                no_onload: false,
+                path: '/', // Get total site stats
                 attr: { 'data-label': '' }
             });
 
-            // 2. Update About page with global unique users
+            // 2. Update About page elements
             window.goatcounter.visit_count({
                 append: '#about-unique-users',
-                no_onload: false,
+                path: '/',
                 attr: { 'data-label': '' }
             });
 
-            // 3. Update About page with global total views
-            // Note: GoatCounter's visit_count usually returns unique visitors by default.
-            // For total views, we try 'type: html' or similar if supported, 
-            // but for now we'll sync it with the count we get.
             window.goatcounter.visit_count({
                 append: '#about-page-views',
-                no_onload: false,
+                path: '/',
                 attr: { 'data-label': '' }
             });
 
-            console.log("GoatCounter global stats requested for footer and About page");
+            console.log("GoatCounter global stats requested.");
+        } else {
+            console.warn("GoatCounter script not loaded or visit_count not available. (External counts don't work on local file:// URLs)");
         }
-    }, 1500);
+    }, 2000);
 
     // Track additional metrics
     trackUsageMetrics();
