@@ -1,80 +1,632 @@
 body {
     font-family: Arial, sans-serif;
-    background: #f6f8fa;
+    background: #fff8f0;
     margin: 0;
     padding: 0;
 }
-
-.container {
-    max-width: 900px;
-    margin: auto;
-    padding: 20px;
-    background: white;
-    margin-top: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-
 h1 {
     text-align: center;
-    margin-bottom: 20px;
+    padding: 20px;
+    color: #d35400;
 }
-
 .tabs {
     display: flex;
     justify-content: center;
+    margin-top: 10px;
+}
+.tab {
+    padding: 10px 20px;
+    background: #f39c12;
+    color: white;
+    border-radius: 5px 5px 0 0;
+    margin-right: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+.tab:hover {
+    background: #e67e22;
+}
+.tab.active {
+    background: #d35400;
+    font-weight: bold;
+}
+.tab-content {
+    display: none;
+    background: white;
+    padding: 20px;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.two-column-layout {
+    display: flex;
+    gap: 30px;
+    min-height: 600px;
+}
+
+.left-column {
+    flex: 1;
+    max-width: 450px;
+    padding: 25px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.right-column {
+    flex: 1;
+    min-width: 500px;
+    padding: 25px;
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+@media (max-width: 768px) {
+    body {
+        overflow-x: hidden;
+    }
+    
+    h1 {
+        font-size: 24px;
+        padding: 15px 10px;
+        margin: 0;
+    }
+    
+    .tagline-quote {
+        font-size: 16px !important;
+        margin: -5px 0 15px 0 !important;
+        padding: 0 10px;
+    }
+    
+    .tabs {
+        flex-direction: column;
+        margin: 10px;
+        gap: 5px;
+    }
+    
+    .tab {
+        margin-right: 0;
+        margin-bottom: 5px;
+        padding: 12px 15px;
+        text-align: center;
+        border-radius: 8px;
+        font-size: 14px;
+    }
+    
+    .tab-content {
+        margin: 0 10px 20px 10px;
+        padding: 15px;
+        border-radius: 8px;
+        max-width: none;
+    }
+    
+    .two-column-layout {
+        flex-direction: column;
+        gap: 15px;
+        min-height: auto;
+    }
+    
+    .left-column, .right-column {
+        max-width: none;
+        min-width: auto;
+        flex: none;
+        padding: 15px;
+        margin: 0;
+    }
+    
+    .left-column {
+        order: 1;
+    }
+    
+    .right-column {
+        order: 2;
+    }
+    
+    .plot-container {
+        min-height: 300px;
+        padding: 10px;
+    }
+    
+    .plot-box {
+        height: 300px;
+        max-height: 300px;
+    }
+    
+    #welcome-message, #welcome-message-discrete {
+        padding: 15px !important;
+    }
+    
+    #welcome-message h4, #welcome-message-discrete h4 {
+        font-size: 18px !important;
+        margin-bottom: 12px !important;
+    }
+    
+    #welcome-message p, #welcome-message-discrete p {
+        font-size: 14px !important;
+        margin-bottom: 15px !important;
+    }
+    
+    #welcome-message .welcome-tags, #welcome-message-discrete .welcome-tags {
+        gap: 8px !important;
+        margin-top: 15px !important;
+    }
+    
+    #welcome-message .welcome-tags span, #welcome-message-discrete .welcome-tags span {
+        font-size: 12px !important;
+        padding: 6px 10px !important;
+    }
+    
+    .explain-panel {
+        margin-top: 15px;
+    }
+    
+    .explain-header {
+        padding: 12px 15px;
+        font-size: 14px;
+    }
+    
+    .explain-body {
+        padding: 15px;
+    }
+    
+    .formula-box {
+        font-size: 12px;
+        padding: 10px;
+    }
+    
+    .interpretation, .shaded-area {
+        font-size: 13px;
+        padding: 12px;
+    }
+    
+    footer {
+        position: relative;
+        bottom: auto;
+        margin-top: 20px;
+        padding: 10px;
+        font-size: 11px;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 20px;
+        padding: 10px 5px;
+    }
+    
+    .tagline-quote {
+        font-size: 14px !important;
+        margin: -5px 0 12px 0 !important;
+        padding: 0 5px;
+    }
+    
+    .tab {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+    
+    .tab-content {
+        margin: 0 5px 15px 5px;
+        padding: 10px;
+    }
+    
+    .left-column, .right-column {
+        padding: 10px;
+    }
+    
+    .plot-container {
+        min-height: 250px;
+        padding: 8px;
+    }
+    
+    .plot-box {
+        height: 250px;
+        max-height: 250px;
+    }
+    
+    #welcome-message, #welcome-message-discrete {
+        padding: 12px !important;
+    }
+    
+    #welcome-message h4, #welcome-message-discrete h4 {
+        font-size: 16px !important;
+        margin-bottom: 10px !important;
+    }
+    
+    #welcome-message p, #welcome-message-discrete p {
+        font-size: 13px !important;
+        margin-bottom: 12px !important;
+    }
+    
+    #welcome-message .welcome-tags, #welcome-message-discrete .welcome-tags {
+        gap: 6px !important;
+        margin-top: 12px !important;
+    }
+    
+    #welcome-message .welcome-tags span, #welcome-message-discrete .welcome-tags span {
+        font-size: 11px !important;
+        padding: 5px 8px !important;
+    }
+    
+    .explain-header {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+    
+    .explain-body {
+        padding: 12px;
+    }
+    
+    .formula-box {
+        font-size: 11px;
+        padding: 8px;
+    }
+    
+    .interpretation, .shaded-area {
+        font-size: 12px;
+        padding: 10px;
+    }
+    
+    footer {
+        font-size: 10px;
+        padding: 8px;
+    }
+    
+    #about {
+        padding: 10px;
+    }
+    
+    #about h2 {
+        font-size: 24px !important;
+        margin-bottom: 20px !important;
+    }
+    
+    #about h3 {
+        font-size: 18px !important;
+        margin-bottom: 15px !important;
+    }
+    
+    #about p, #about li {
+        font-size: 14px !important;
+    }
+    
+    #about .grid {
+        grid-template-columns: 1fr !important;
+        gap: 15px !important;
+    }
+}
+label {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 14px;
+}
+select, input {
+    width: 100%;
+    padding: 12px 15px;
+    margin-top: 0;
+    border: 2px solid #e1e8ed;
+    border-radius: 8px;
+    font-size: 15px;
+    background: white;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+    min-height: 44px; /* Touch-friendly minimum height */
+}
+
+@media (max-width: 768px) {
+    select, input {
+        padding: 14px 15px;
+        font-size: 16px; /* Prevents zoom on iOS */
+        min-height: 48px;
+    }
+    
+    label {
+        font-size: 15px;
+        margin-top: 18px;
+        margin-bottom: 8px;
+    }
+    
+    button {
+        padding: 16px 25px;
+        font-size: 16px;
+        min-height: 48px;
+        margin-top: 20px;
+    }
+    
+    .precision-control {
+        margin: 18px 0;
+        padding: 15px;
+    }
+    
+    .precision-control label {
+        font-size: 15px;
+        margin: 0;
+    }
+    
+    .precision-options {
+        gap: 10px;
+        margin-top: 10px;
+    }
+    
+    .precision-option {
+        font-size: 14px;
+    }
+    
+    #about {
+        padding: 15px;
+    }
+    
+    #about h2 {
+        font-size: 26px !important;
+        margin-bottom: 25px !important;
+    }
+    
+    #about h3 {
+        font-size: 20px !important;
+        margin-bottom: 18px !important;
+    }
+    
+    #about p, #about li {
+        font-size: 15px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    select, input {
+        padding: 12px 12px;
+        font-size: 15px;
+        min-height: 44px;
+    }
+    
+    label {
+        font-size: 14px;
+        margin-top: 15px;
+        margin-bottom: 6px;
+    }
+    
+    button {
+        padding: 14px 20px;
+        font-size: 15px;
+        min-height: 44px;
+        margin-top: 18px;
+    }
+    
+    .precision-control {
+        margin: 15px 0;
+        padding: 12px;
+    }
+    
+    .precision-control label {
+        font-size: 14px;
+    }
+    
+    .precision-options {
+        gap: 8px;
+        margin-top: 8px;
+    }
+    
+    .precision-option {
+        font-size: 13px;
+    }
+}
+select:focus, input:focus {
+    outline: none;
+    border-color: #f39c12;
+    box-shadow: 0 0 0 3px rgba(243, 156, 18, 0.1);
+    transform: translateY(-1px);
+}
+select:hover, input:hover {
+    border-color: #d35400;
+}
+button {
+    margin-top: 25px;
+    padding: 15px 25px;
+    background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+    color: white;
+    border: none;
+    width: 100%;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+button:hover {
+    background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(243, 156, 18, 0.4);
+}
+button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 10px rgba(243, 156, 18, 0.3);
+}
+.plot-container {
+    margin-top: 0;
+    display: flex;
+    justify-content: center;
+    flex: 1;
+    min-height: 500px;
+    background: #fafbfc;
+    border-radius: 10px;
+    padding: 15px;
+    border: 1px solid #e9ecef;
+    overflow: hidden;
+}
+.plot-box {
+    width: 100%;
+    height: 100%;
+    max-height: 500px;
+    border-radius: 8px;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+#continuous-forms, #discrete-forms {
+    margin-top: 10px;
+}
+
+h3 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 3px solid #f39c12;
+    color: #d35400;
+    position: relative;
+}
+
+h3::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    width: 30px;
+    height: 3px;
+    background: #d35400;
+}
+
+.precision-control {
+    margin: 15px 0;
+    padding: 12px;
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+    border-radius: 8px;
+    border-left: 4px solid #f39c12;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.precision-control label {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    cursor: pointer;
+    font-size: 14px;
+    color: #2c3e50;
+    font-weight: 500;
+}
+
+.precision-control input[type="radio"] {
+    margin-right: 8px;
+    width: 16px;
+    height: 16px;
+    accent-color: #f39c12;
+}
+
+.precision-options {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.precision-option {
+    display: flex;
+    align-items: center;
+    font-size: 13px;
+    color: #34495e;
+}
+
+.explain-panel {
+    margin-top: 20px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border-radius: 10px;
+    border: 1px solid #e9ecef;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    overflow: hidden;
+}
+
+.explain-header {
+    background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+    color: white;
+    padding: 15px 20px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    transition: background 0.3s ease;
+}
+
+.explain-header:hover {
+    background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+}
+
+.explain-toggle {
+    font-size: 18px;
+    transition: transform 0.3s ease;
+}
+
+.explain-toggle.expanded {
+    transform: rotate(180deg);
+}
+
+.explain-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.explain-content.expanded {
+    max-height: 1000px;
+}
+
+.explain-body {
+    padding: 20px;
+}
+
+.formula-section {
     margin-bottom: 20px;
 }
 
-.tab-btn {
-    background: #ddd;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    margin: 0 5px;
-    border-radius: 4px;
-    font-weight: bold;
-}
-
-.tab-btn.active {
-    background: #007bff;
-    color: white;
-}
-
-label {
-    display: block;
-    margin: 10px 0 5px;
-}
-
-select, input, button {
-    width: 100%;
-    padding: 8px;
+.formula-title {
+    font-weight: 600;
+    color: #2c3e50;
     margin-bottom: 10px;
+    font-size: 16px;
 }
 
-button {
-    background: #007bff;
-    color: white;
-    border: none;
-    font-weight: bold;
-    cursor: pointer;
+.formula-box {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 10px 0;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #2c3e50;
+    overflow-x: auto;
 }
 
-button:hover {
-    background: #0056b3;
+.interpretation {
+    background: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%);
+    border-left: 4px solid #27ae60;
+    padding: 15px;
+    border-radius: 0 8px 8px 0;
+    margin: 15px 0;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #2c3e50;
 }
 
-#plot-area {
-    margin-top: 20px;
-}
-
-#plot, #t-plot, #binom-plot, #pois-plot {
-    display: none;
-}
-
-.result {
-    font-size: 1.2em;
-    font-weight: bold;
-    color: #ff7f0e;
-    margin-top: 10px;
+.shaded-area {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+    border-left: 4px solid #f39c12;
+    padding: 15px;
+    border-radius: 0 8px 8px 0;
+    margin: 15px 0;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #2c3e50;
 }

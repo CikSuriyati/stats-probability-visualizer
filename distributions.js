@@ -4,12 +4,12 @@
 function updateUserCount() {
     // Get current count from localStorage or initialize to 0
     let userCount = parseInt(localStorage.getItem('probVizUserCount') || '0');
-    
+
     // Check if this is a new session (not just a page refresh)
     const sessionKey = 'probVizSession_' + Date.now();
     const lastSession = localStorage.getItem('probVizLastSession');
     const now = Date.now();
-    
+
     // Only increment if it's been more than 30 minutes since last visit
     // This prevents counting page refreshes as new users
     if (!lastSession || (now - parseInt(lastSession)) > 30 * 60 * 1000) {
@@ -17,12 +17,12 @@ function updateUserCount() {
         localStorage.setItem('probVizUserCount', userCount.toString());
         localStorage.setItem('probVizLastSession', now.toString());
     }
-    
+
     // Display the count with formatting
     const countElement = document.getElementById('user-count');
     if (countElement) {
         countElement.textContent = userCount.toLocaleString();
-        
+
         // Add a subtle animation when count updates
         countElement.style.transition = 'all 0.3s ease';
         countElement.style.transform = 'scale(1.1)';
@@ -30,10 +30,10 @@ function updateUserCount() {
             countElement.style.transform = 'scale(1)';
         }, 300);
     }
-    
+
     // Track additional metrics
     trackUsageMetrics();
-    
+
     // Optional: Send to analytics service
     // sendUserCountToServer(userCount);
 }
@@ -43,12 +43,12 @@ function trackUsageMetrics() {
     let pageViews = parseInt(localStorage.getItem('probVizPageViews') || '0');
     pageViews++;
     localStorage.setItem('probVizPageViews', pageViews.toString());
-    
+
     // Track first visit date
     if (!localStorage.getItem('probVizFirstVisit')) {
         localStorage.setItem('probVizFirstVisit', new Date().toISOString());
     }
-    
+
     // Track last visit
     localStorage.setItem('probVizLastVisit', new Date().toISOString());
 }
@@ -58,7 +58,7 @@ function getUsageStats() {
     const pageViews = parseInt(localStorage.getItem('probVizPageViews') || '0');
     const firstVisit = localStorage.getItem('probVizFirstVisit');
     const lastVisit = localStorage.getItem('probVizLastVisit');
-    
+
     return {
         uniqueUsers: userCount,
         totalPageViews: pageViews,
@@ -78,10 +78,10 @@ function sendUserCountToServer(count) {
 function restoreWelcomeMessage(type) {
     const plotId = type === 'continuous' ? 'continuous-plot' : 'discrete-plot';
     const welcomeId = type === 'continuous' ? 'welcome-message' : 'welcome-message-discrete';
-    
+
     const plotBox = document.getElementById(plotId);
     const existingWelcome = document.getElementById(welcomeId);
-    
+
     // Only add welcome message if it doesn't exist
     if (!existingWelcome) {
         const welcomeHTML = `
@@ -104,21 +104,21 @@ function restoreWelcomeMessage(type) {
 }
 
 // Initialize user count when page loads
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     updateUserCount();
-    
+
     // Add click tracking for the user count (shows stats)
     const countElement = document.getElementById('user-count');
     if (countElement) {
         countElement.style.cursor = 'pointer';
         countElement.title = 'Click to see usage statistics';
-        countElement.addEventListener('click', function() {
+        countElement.addEventListener('click', function () {
             const stats = getUsageStats();
             alert(`📊 ProbViz Usage Statistics:\n\n` +
-                  `👥 Unique Users: ${stats.uniqueUsers.toLocaleString()}\n` +
-                  `📄 Total Page Views: ${stats.totalPageViews.toLocaleString()}\n` +
-                  `📅 First Visit: ${stats.firstVisit ? new Date(stats.firstVisit).toLocaleDateString() : 'Unknown'}\n` +
-                  `🕒 Last Visit: ${stats.lastVisit ? new Date(stats.lastVisit).toLocaleDateString() : 'Unknown'}`);
+                `👥 Unique Users: ${stats.uniqueUsers.toLocaleString()}\n` +
+                `📄 Total Page Views: ${stats.totalPageViews.toLocaleString()}\n` +
+                `📅 First Visit: ${stats.firstVisit ? new Date(stats.firstVisit).toLocaleDateString() : 'Unknown'}\n` +
+                `🕒 Last Visit: ${stats.lastVisit ? new Date(stats.lastVisit).toLocaleDateString() : 'Unknown'}`);
         });
     }
 });
@@ -175,7 +175,7 @@ function calculateNormal() {
     // Get precision setting
     const precision = document.querySelector('input[name="precision"]:checked')?.value || "4";
     const decimalPlaces = parseInt(precision);
-    
+
     const resultHTML = `
         <div style="margin-top: 15px; padding: 15px; background: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%); border-radius: 8px; border-left: 4px solid #27ae60; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
             <div style="font-weight: bold; color: #2c3e50; margin-bottom: 8px; font-size: 16px;">📊 Probability Result:</div>
@@ -183,7 +183,7 @@ function calculateNormal() {
         </div>
     `;
     document.getElementById("result").innerHTML = resultHTML;
-    
+
     // Update explanation
     updateExplanation("continuous", "normal", {
         mean: mean,
@@ -194,7 +194,7 @@ function calculateNormal() {
         type: type,
         n: n
     });
-    
+
     try {
         plotNormal(mean, sdUsed, x, upper, inequality);
     } catch (error) {
@@ -224,23 +224,23 @@ function plotNormal(mean, sd, x, upper, inequality) {
 
     // Calculate Z-score for the critical value
     const zScore = (x - mean) / sd;
-    
+
     // Create traces
-    let trace1 = { 
-        x: xValues, 
-        y: yValues, 
-        type: 'scatter', 
-        mode: 'lines', 
+    let trace1 = {
+        x: xValues,
+        y: yValues,
+        type: 'scatter',
+        mode: 'lines',
         name: 'PDF',
         line: { color: '#2E86AB', width: 3 }
     };
-    
-    let trace2 = { 
-        x: highlightX, 
-        y: highlightY, 
-        type: 'scatter', 
-        mode: 'lines', 
-        fill: 'tozeroy', 
+
+    let trace2 = {
+        x: highlightX,
+        y: highlightY,
+        type: 'scatter',
+        mode: 'lines',
+        fill: 'tozeroy',
         name: 'Probability Area',
         line: { color: '#A23B72', width: 2 },
         fillcolor: 'rgba(162, 59, 114, 0.3)'
@@ -248,11 +248,11 @@ function plotNormal(mean, sd, x, upper, inequality) {
 
     // Create annotations for better labeling
     let annotations = [];
-    
+
     // Add Z-score annotation with arrow
     const maxY = Math.max(...yValues);
     const zScoreY = jStat.normal.pdf(x, mean, sd);
-    
+
     annotations.push({
         x: x,
         y: zScoreY + maxY * 0.1,
@@ -268,7 +268,7 @@ function plotNormal(mean, sd, x, upper, inequality) {
         bordercolor: '#2c3e50',
         borderwidth: 1
     });
-    
+
     // Add probability labels based on inequality type
     if (inequality === "lt" || inequality === "le") {
         // Left tail probability
@@ -284,7 +284,7 @@ function plotNormal(mean, sd, x, upper, inequality) {
             bordercolor: '#A23B72',
             borderwidth: 2
         });
-        
+
         // Right tail probability
         const rightAreaX = mean + 2 * sd;
         const rightAreaY = maxY * 0.6;
@@ -312,7 +312,7 @@ function plotNormal(mean, sd, x, upper, inequality) {
             bordercolor: '#A23B72',
             borderwidth: 2
         });
-        
+
         // Left tail probability
         const leftAreaX = mean - 2 * sd;
         const leftAreaY = maxY * 0.6;
@@ -361,7 +361,7 @@ function plotNormal(mean, sd, x, upper, inequality) {
     if (welcomeMsg) {
         welcomeMsg.remove();
     }
-    
+
     const layout = {
         title: {
             text: 'Area under the curve in a standard normal distribution',
@@ -394,7 +394,7 @@ function plotNormal(mean, sd, x, upper, inequality) {
             borderwidth: 1
         }
     };
-    
+
     Plotly.newPlot('continuous-plot', [trace1, trace2], layout);
 }
 
@@ -429,7 +429,7 @@ function calculateT() {
     // Get precision setting
     const precision = document.querySelector('input[name="t-precision"]:checked')?.value || "4";
     const decimalPlaces = parseInt(precision);
-    
+
     const resultHTML = `
         <div style="margin-top: 15px; padding: 15px; background: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%); border-radius: 8px; border-left: 4px solid #27ae60; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
             <div style="font-weight: bold; color: #2c3e50; margin-bottom: 8px; font-size: 16px;">📊 Probability Result:</div>
@@ -437,7 +437,7 @@ function calculateT() {
         </div>
     `;
     document.getElementById("t-result").innerHTML = resultHTML;
-    
+
     // Update explanation
     updateExplanation("continuous", "t", {
         df: df,
@@ -445,7 +445,7 @@ function calculateT() {
         upper: upper,
         inequality: inequality
     });
-    
+
     try {
         plotT(df, x, upper, inequality);
     } catch (error) {
@@ -481,7 +481,7 @@ function plotT(df, x, upper, inequality) {
     if (welcomeMsg) {
         welcomeMsg.remove();
     }
-    
+
     Plotly.newPlot('continuous-plot', [trace1, trace2], { title: 't-Distribution', margin: { t: 30 } });
 }
 
@@ -510,13 +510,13 @@ function calculateBinomial() {
 
     let prob = 0;
     let method = "Exact Binomial";
-    
+
     if (continuityCorrection && n * p >= 5 && n * (1 - p) >= 5) {
         // Use normal approximation with continuity correction
         const mean = n * p;
         const std = Math.sqrt(n * p * (1 - p));
         let z1, z2;
-        
+
         if (inequality === "eq") {
             z1 = (x - 0.5 - mean) / std;
             z2 = (x + 0.5 - mean) / std;
@@ -562,7 +562,7 @@ function calculateBinomial() {
     // Get precision setting
     const precision = document.querySelector('input[name="binom-precision"]:checked')?.value || "4";
     const decimalPlaces = parseInt(precision);
-    
+
     const resultHTML = `
         <div style="margin-top: 15px; padding: 15px; background: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%); border-radius: 8px; border-left: 4px solid #27ae60; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
             <div style="font-weight: bold; color: #2c3e50; margin-bottom: 8px; font-size: 16px;">📊 Probability Result:</div>
@@ -571,9 +571,9 @@ function calculateBinomial() {
             ${continuityCorrection && n * p < 5 ? '<div style="font-size: 12px; color: #e74c3c; margin-top: 5px;">⚠️ Normal approximation not recommended (np < 5)</div>' : ''}
         </div>
     `;
-    
+
     document.getElementById("binom-result").innerHTML = resultHTML;
-    
+
     // Update explanation
     updateExplanation("discrete", "binomial", {
         n: n,
@@ -583,7 +583,7 @@ function calculateBinomial() {
         inequality: inequality,
         continuityCorrection: continuityCorrection
     });
-    
+
     try {
         plotBinomial(n, p, x, upper, inequality);
     } catch (error) {
@@ -619,7 +619,7 @@ function plotBinomial(n, p, x, upper, inequality) {
     if (welcomeMsg) {
         welcomeMsg.remove();
     }
-    
+
     Plotly.newPlot('discrete-plot', [trace1, trace2], { title: 'Binomial Distribution', margin: { t: 30 } });
 }
 
@@ -642,7 +642,7 @@ function calculatePoisson() {
 
     let prob = 0;
     let description = "";
-    
+
     if (inequality === "eq") {
         prob = jStat.poisson.pdf(x, lambda);
         description = `P(X = ${x})`;
@@ -670,7 +670,7 @@ function calculatePoisson() {
     // Get precision setting
     const precision = document.querySelector('input[name="pois-precision"]:checked')?.value || "4";
     const decimalPlaces = parseInt(precision);
-    
+
     const resultHTML = `
         <div style="margin-top: 15px; padding: 15px; background: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%); border-radius: 8px; border-left: 4px solid #27ae60; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
             <div style="font-weight: bold; color: #2c3e50; margin-bottom: 8px; font-size: 16px;">📊 Probability Result:</div>
@@ -686,9 +686,9 @@ function calculatePoisson() {
             </div>
         </div>
     `;
-    
+
     document.getElementById("pois-result").innerHTML = resultHTML;
-    
+
     // Update explanation
     updateExplanation("discrete", "poisson", {
         lambda: lambda,
@@ -696,7 +696,7 @@ function calculatePoisson() {
         upper: upper,
         inequality: inequality
     });
-    
+
     try {
         plotPoisson(lambda, x, upper, inequality);
     } catch (error) {
@@ -733,7 +733,7 @@ function plotPoisson(lambda, x, upper, inequality) {
     if (welcomeMsg) {
         welcomeMsg.remove();
     }
-    
+
     Plotly.newPlot('discrete-plot', [trace1, trace2], { title: 'Poisson Distribution', margin: { t: 30 } });
 }
 
@@ -743,30 +743,30 @@ function generateNormalExplanation(mean, sd, x, upper, inequality, type, n) {
     const sdUsed = type === "sampling" ? sd / Math.sqrt(n) : sd;
     const z = (x - mean) / sdUsed;
     const zUpper = upper ? (upper - mean) / sdUsed : null;
-    
+
     let formula = "";
     let interpretation = "";
     let shadedArea = "";
-    
+
     if (inequality === "lt" || inequality === "le") {
-        formula = `P(X ≤ ${x}) = Φ(${z.toFixed(4)})`;
+        formula = `P(X \\le ${x}) = \\Phi(${z.toFixed(4)})`;
         interpretation = `This represents the probability that a randomly selected value from the normal distribution is less than or equal to ${x}. The value ${z.toFixed(4)} is the standardized z-score.`;
-        shadedArea = `The shaded area under the curve represents all values from -∞ to ${x}, which corresponds to the cumulative probability.`;
+        shadedArea = `The shaded area under the curve represents all values from $-\\infty$ to ${x}, which corresponds to the cumulative probability.`;
     } else if (inequality === "gt" || inequality === "ge") {
-        formula = `P(X ≥ ${x}) = 1 - Φ(${z.toFixed(4)})`;
-        interpretation = `This represents the probability that a randomly selected value from the normal distribution is greater than or equal to ${x}. We use the complement rule: 1 minus the probability of being less than ${x}.`;
-        shadedArea = `The shaded area under the curve represents all values from ${x} to +∞, which corresponds to the right tail probability.`;
+        formula = `P(X \\ge ${x}) = 1 - \\Phi(${z.toFixed(4)})`;
+        interpretation = `This represents the probability that a randomly selected value from the normal distribution is greater than or equal to ${x}. We use the complement rule: $1$ minus the probability of being less than ${x}.`;
+        shadedArea = `The shaded area under the curve represents all values from ${x} to $+\\infty$, which corresponds to the right tail probability.`;
     } else if (inequality === "between") {
-        formula = `P(${x} ≤ X ≤ ${upper}) = Φ(${zUpper.toFixed(4)}) - Φ(${z.toFixed(4)})`;
+        formula = `P(${x} \\le X \\le ${upper}) = \\Phi(${zUpper.toFixed(4)}) - \\Phi(${z.toFixed(4)})`;
         interpretation = `This represents the probability that a randomly selected value falls between ${x} and ${upper}. We subtract the cumulative probability at the lower bound from the upper bound.`;
         shadedArea = `The shaded area under the curve represents all values between ${x} and ${upper}, showing the probability mass in this interval.`;
     }
-    
+
     if (type === "sampling") {
-        formula += ` (using σ/√n = ${sdUsed.toFixed(4)})`;
-        interpretation += ` Note: This uses the sampling distribution of the mean with standard error σ/√n = ${sdUsed.toFixed(4)}.`;
+        formula += ` \\text{ (using } \\sigma/\\sqrt{n} = ${sdUsed.toFixed(4)} )`;
+        interpretation += ` Note: This uses the sampling distribution of the mean with standard error $\\sigma/\\sqrt{n} = ${sdUsed.toFixed(4)}$.`;
     }
-    
+
     return {
         formula: formula,
         interpretation: interpretation,
@@ -778,21 +778,21 @@ function generateTExplanation(df, x, upper, inequality) {
     let formula = "";
     let interpretation = "";
     let shadedArea = "";
-    
+
     if (inequality === "lt" || inequality === "le") {
-        formula = `P(T ≤ ${x}) = F(${x}; ${df})`;
+        formula = `P(T \\le ${x}) = F(${x}; ${df})`;
         interpretation = `This represents the probability that a t-statistic with ${df} degrees of freedom is less than or equal to ${x}. The t-distribution is used for small sample sizes and when the population standard deviation is unknown.`;
-        shadedArea = `The shaded area under the t-distribution curve represents all values from -∞ to ${x}, showing the cumulative probability.`;
+        shadedArea = `The shaded area under the t-distribution curve represents all values from $-\\infty$ to ${x}, showing the cumulative probability.`;
     } else if (inequality === "gt" || inequality === "ge") {
-        formula = `P(T ≥ ${x}) = 1 - F(${x}; ${df})`;
+        formula = `P(T \\ge ${x}) = 1 - F(${x}; ${df})`;
         interpretation = `This represents the probability that a t-statistic with ${df} degrees of freedom is greater than or equal to ${x}. We use the complement rule since the t-distribution is symmetric.`;
-        shadedArea = `The shaded area under the t-distribution curve represents all values from ${x} to +∞, showing the right tail probability.`;
+        shadedArea = `The shaded area under the t-distribution curve represents all values from ${x} to $+\\infty$, showing the right tail probability.`;
     } else if (inequality === "between") {
-        formula = `P(${x} ≤ T ≤ ${upper}) = F(${upper}; ${df}) - F(${x}; ${df})`;
+        formula = `P(${x} \\le T \\le ${upper}) = F(${upper}; ${df}) - F(${x}; ${df})`;
         interpretation = `This represents the probability that a t-statistic with ${df} degrees of freedom falls between ${x} and ${upper}. The t-distribution becomes more normal-like as degrees of freedom increase.`;
         shadedArea = `The shaded area under the t-distribution curve represents all values between ${x} and ${upper}, showing the probability mass in this interval.`;
     }
-    
+
     return {
         formula: formula,
         interpretation: interpretation,
@@ -804,52 +804,52 @@ function generateBinomialExplanation(n, p, x, upper, inequality, continuityCorre
     let formula = "";
     let interpretation = "";
     let shadedArea = "";
-    
+
     if (continuityCorrection && n * p >= 5 && n * (1 - p) >= 5) {
         // Normal approximation
         const mean = n * p;
         const std = Math.sqrt(n * p * (1 - p));
         const z = (x - mean) / std;
         const zUpper = upper ? (upper - mean) / std : null;
-        
+
         if (inequality === "eq") {
-            formula = `P(X = ${x}) ≈ P(${x-0.5} ≤ Y ≤ ${x+0.5}) where Y ~ N(${mean}, ${std.toFixed(4)}²)`;
-            interpretation = `Using normal approximation with continuity correction. We approximate the discrete binomial with a continuous normal distribution, adjusting the bounds by ±0.5.`;
-            shadedArea = `The shaded area represents the probability mass at exactly ${x} successes, approximated by the area under the normal curve between ${x-0.5} and ${x+0.5}.`;
+            formula = `P(X = ${x}) \\approx P(${x - 0.5} \\le Y \\le ${x + 0.5}) \\text{ where } Y \\sim N(${mean}, ${std.toFixed(4)}^2)`;
+            interpretation = `Using normal approximation with continuity correction. We approximate the discrete binomial with a continuous normal distribution, adjusting the bounds by $\\pm 0.5$.`;
+            shadedArea = `The shaded area represents the probability mass at exactly ${x} successes, approximated by the area under the normal curve between ${x - 0.5} and ${x + 0.5}.`;
         } else if (inequality === "le") {
-            formula = `P(X ≤ ${x}) ≈ P(Y ≤ ${x+0.5}) where Y ~ N(${mean}, ${std.toFixed(4)}²)`;
-            interpretation = `Using normal approximation with continuity correction. We add 0.5 to the upper bound to account for the discrete nature of the binomial distribution.`;
-            shadedArea = `The shaded area represents the probability of ${x} or fewer successes, approximated by the area under the normal curve up to ${x+0.5}.`;
+            formula = `P(X \\le ${x}) \\approx P(Y \\le ${x + 0.5}) \\text{ where } Y \\sim N(${mean}, ${std.toFixed(4)}^2)`;
+            interpretation = `Using normal approximation with continuity correction. We add $0.5$ to the upper bound to account for the discrete nature of the binomial distribution.`;
+            shadedArea = `The shaded area represents the probability of ${x} or fewer successes, approximated by the area under the normal curve up to ${x + 0.5}.`;
         } else if (inequality === "ge") {
-            formula = `P(X ≥ ${x}) ≈ P(Y ≥ ${x-0.5}) where Y ~ N(${mean}, ${std.toFixed(4)}²)`;
-            interpretation = `Using normal approximation with continuity correction. We subtract 0.5 from the lower bound to account for the discrete nature of the binomial distribution.`;
-            shadedArea = `The shaded area represents the probability of ${x} or more successes, approximated by the area under the normal curve from ${x-0.5} onwards.`;
+            formula = `P(X \\ge ${x}) \\approx P(Y \\ge ${x - 0.5}) \\text{ where } Y \\sim N(${mean}, ${std.toFixed(4)}^2)`;
+            interpretation = `Using normal approximation with continuity correction. We subtract $0.5$ from the lower bound to account for the discrete nature of the binomial distribution.`;
+            shadedArea = `The shaded area represents the probability of ${x} or more successes, approximated by the area under the normal curve from ${x - 0.5} onwards.`;
         } else if (inequality === "between") {
-            formula = `P(${x} ≤ X ≤ ${upper}) ≈ P(${x-0.5} ≤ Y ≤ ${upper+0.5}) where Y ~ N(${mean}, ${std.toFixed(4)}²)`;
-            interpretation = `Using normal approximation with continuity correction. We adjust both bounds by ±0.5 to better approximate the discrete binomial probabilities.`;
-            shadedArea = `The shaded area represents the probability of between ${x} and ${upper} successes, approximated by the area under the normal curve between ${x-0.5} and ${upper+0.5}.`;
+            formula = `P(${x} \\le X \\le ${upper}) \\approx P(${x - 0.5} \\le Y \\le ${upper + 0.5}) \\text{ where } Y \\sim N(${mean}, ${std.toFixed(4)}^2)`;
+            interpretation = `Using normal approximation with continuity correction. We adjust both bounds by $\\pm 0.5$ to better approximate the discrete binomial probabilities.`;
+            shadedArea = `The shaded area represents the probability of between ${x} and ${upper} successes, approximated by the area under the normal curve between ${x - 0.5} and ${upper + 0.5}.`;
         }
     } else {
         // Exact binomial
         if (inequality === "eq") {
-            formula = `P(X = ${x}) = C(${n}, ${x}) × ${p}^${x} × ${(1-p)}^${n-x}`;
-            interpretation = `This is the exact binomial probability of getting exactly ${x} successes in ${n} trials. The formula uses the binomial coefficient C(${n}, ${x}) and the probability of success ${p}.`;
+            formula = `P(X = ${x}) = \\binom{n}{x} \\times p^{x} \\times (1-p)^{n-x}`;
+            interpretation = `This is the exact binomial probability of getting exactly ${x} successes in ${n} trials. The formula uses the binomial coefficient $\\binom{${n}}{${x}}$ and the probability of success $p = ${p}$.`;
             shadedArea = `The shaded bar represents the probability mass at exactly ${x} successes, showing the discrete probability for this specific outcome.`;
         } else if (inequality === "le") {
-            formula = `P(X ≤ ${x}) = Σ(k=0 to ${x}) C(${n}, k) × ${p}^k × ${(1-p)}^${n-k}`;
-            interpretation = `This is the cumulative probability of getting ${x} or fewer successes in ${n} trials. We sum the probabilities of all outcomes from 0 to ${x} successes.`;
-            shadedArea = `The shaded bars represent the probability mass for 0, 1, 2, ..., ${x} successes, showing the cumulative probability.`;
+            formula = `P(X \\le ${x}) = \\sum_{k=0}^{${x}} \\binom{n}{k} \\times p^k \\times (1-p)^{n-k}`;
+            interpretation = `This is the cumulative probability of getting ${x} or fewer successes in ${n} trials. We sum the probabilities of all outcomes from $0$ to ${x}$ successes.`;
+            shadedArea = `The shaded bars represent the probability mass for $0, 1, 2, \\dots, ${x}$ successes, showing the cumulative probability.`;
         } else if (inequality === "ge") {
-            formula = `P(X ≥ ${x}) = 1 - P(X ≤ ${x-1}) = 1 - Σ(k=0 to ${x-1}) C(${n}, k) × ${p}^k × ${(1-p)}^${n-k}`;
-            interpretation = `This is the probability of getting ${x} or more successes in ${n} trials. We use the complement rule: 1 minus the probability of getting fewer than ${x} successes.`;
-            shadedArea = `The shaded bars represent the probability mass for ${x}, ${x+1}, ..., ${n} successes, showing the right tail probability.`;
+            formula = `P(X \\ge ${x}) = 1 - P(X \\le ${x - 1}) = 1 - \\sum_{k=0}^{${x - 1}} \\binom{n}{k} \\times p^k \\times (1-p)^{n-k}`;
+            interpretation = `This is the probability of getting ${x} or more successes in ${n} trials. We use the complement rule: $1$ minus the probability of getting fewer than ${x}$ successes.`;
+            shadedArea = `The shaded bars represent the probability mass for ${x}, ${x + 1}, \\dots, ${n}$ successes, showing the right tail probability.`;
         } else if (inequality === "between") {
-            formula = `P(${x} ≤ X ≤ ${upper}) = Σ(k=${x} to ${upper}) C(${n}, k) × ${p}^k × ${(1-p)}^${n-k}`;
+            formula = `P(${x} \\le X \\le ${upper}) = \\sum_{k=${x}}^{${upper}} \\binom{n}{k} \\times p^k \\times (1-p)^{n-k}`;
             interpretation = `This is the probability of getting between ${x} and ${upper} successes in ${n} trials. We sum the probabilities of all outcomes from ${x} to ${upper} successes.`;
-            shadedArea = `The shaded bars represent the probability mass for ${x}, ${x+1}, ..., ${upper} successes, showing the probability in this range.`;
+            shadedArea = `The shaded bars represent the probability mass for ${x}, ${x + 1}, \\dots, ${upper}$ successes, showing the probability in this range.`;
         }
     }
-    
+
     return {
         formula: formula,
         interpretation: interpretation,
@@ -861,25 +861,25 @@ function generatePoissonExplanation(lambda, x, upper, inequality) {
     let formula = "";
     let interpretation = "";
     let shadedArea = "";
-    
+
     if (inequality === "eq") {
-        formula = `P(X = ${x}) = (e^(-${lambda}) × ${lambda}^${x}) / ${x}!`;
-        interpretation = `This is the exact Poisson probability of getting exactly ${x} events. The Poisson distribution models rare events occurring at a constant rate λ = ${lambda}.`;
+        formula = `P(X = ${x}) = \\frac{e^{-\\lambda} \\lambda^{x}}{x!}`;
+        interpretation = `This is the exact Poisson probability of getting exactly ${x} events. The Poisson distribution models rare events occurring at a constant rate $\\lambda = ${lambda}$.`;
         shadedArea = `The shaded bar represents the probability mass at exactly ${x} events, showing the discrete probability for this specific outcome.`;
     } else if (inequality === "le") {
-        formula = `P(X ≤ ${x}) = Σ(k=0 to ${x}) (e^(-${lambda}) × ${lambda}^k) / k!`;
-        interpretation = `This is the cumulative probability of getting ${x} or fewer events. We sum the probabilities of all outcomes from 0 to ${x} events using the Poisson formula.`;
-        shadedArea = `The shaded bars represent the probability mass for 0, 1, 2, ..., ${x} events, showing the cumulative probability.`;
+        formula = `P(X \\le ${x}) = \\sum_{k=0}^{${x}} \\frac{e^{-\\lambda} \\lambda^k}{k!}`;
+        interpretation = `This is the cumulative probability of getting ${x} or fewer events. We sum the probabilities of all outcomes from $0$ to ${x}$ events using the Poisson formula.`;
+        shadedArea = `The shaded bars represent the probability mass for $0, 1, 2, \\dots, ${x}$ events, showing the cumulative probability.`;
     } else if (inequality === "ge") {
-        formula = `P(X ≥ ${x}) = 1 - P(X ≤ ${x-1}) = 1 - Σ(k=0 to ${x-1}) (e^(-${lambda}) × ${lambda}^k) / k!`;
-        interpretation = `This is the probability of getting ${x} or more events. We use the complement rule: 1 minus the probability of getting fewer than ${x} events.`;
-        shadedArea = `The shaded bars represent the probability mass for ${x}, ${x+1}, ${x+2}, ... events, showing the right tail probability.`;
+        formula = `P(X \\ge ${x}) = 1 - P(X \\le ${x - 1}) = 1 - \\sum_{k=0}^{${x - 1}} \\frac{e^{-\\lambda} \\lambda^k}{k!}`;
+        interpretation = `This is the probability of getting ${x} or more events. We use the complement rule: $1$ minus the probability of getting fewer than ${x} events.`;
+        shadedArea = `The shaded bars represent the probability mass for ${x}, ${x + 1}, ${x + 2}, \\dots$ events, showing the right tail probability.`;
     } else if (inequality === "between") {
-        formula = `P(${x} ≤ X ≤ ${upper}) = Σ(k=${x} to ${upper}) (e^(-${lambda}) × ${lambda}^k) / k!`;
+        formula = `P(${x} \\le X \\le ${upper}) = \\sum_{k=${x}}^{${upper}} \\frac{e^{-\\lambda} \\lambda^k}{k!}`;
         interpretation = `This is the probability of getting between ${x} and ${upper} events. We sum the probabilities of all outcomes from ${x} to ${upper} events.`;
-        shadedArea = `The shaded bars represent the probability mass for ${x}, ${x+1}, ..., ${upper} events, showing the probability in this range.`;
+        shadedArea = `The shaded bars represent the probability mass for ${x}, ${x + 1}, \\dots, ${upper}$ events, showing the probability in this range.`;
     }
-    
+
     return {
         formula: formula,
         interpretation: interpretation,
@@ -889,7 +889,7 @@ function generatePoissonExplanation(lambda, x, upper, inequality) {
 
 function updateExplanation(type, distribution, params) {
     let explanation = null;
-    
+
     if (distribution === "normal") {
         explanation = generateNormalExplanation(params.mean, params.sd, params.x, params.upper, params.inequality, params.type, params.n);
     } else if (distribution === "t") {
@@ -899,13 +899,13 @@ function updateExplanation(type, distribution, params) {
     } else if (distribution === "poisson") {
         explanation = generatePoissonExplanation(params.lambda, params.x, params.upper, params.inequality);
     }
-    
+
     if (explanation) {
         const explainBody = document.getElementById(type + "-explain-body");
         explainBody.innerHTML = `
             <div class="formula-section">
                 <div class="formula-title">📐 Formula Used:</div>
-                <div class="formula-box">${explanation.formula}</div>
+                <div class="formula-box">\\[ ${explanation.formula} \\]</div>
             </div>
             <div class="interpretation">
                 <strong>💡 Interpretation:</strong><br>
@@ -916,5 +916,17 @@ function updateExplanation(type, distribution, params) {
                 ${explanation.shadedArea}
             </div>
         `;
+
+        // Trigger KaTeX rendering for the new content
+        if (window.renderMathInElement) {
+            renderMathInElement(explainBody, {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false },
+                    { left: "\\[", right: "\\]", display: true },
+                    { left: "\\(", right: "\\)", display: false }
+                ]
+            });
+        }
     }
 }
