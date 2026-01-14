@@ -31,11 +31,22 @@ function updateUserCount() {
         }, 300);
     }
 
+    // Try to get the global count from GoatCounter
+    // We wait a bit to ensure the goatcounter script has loaded
+    setTimeout(() => {
+        if (window.goatcounter && window.goatcounter.visit_count) {
+            // This will fetch the global visitor count
+            // We use the 'no_onload' and 'append' options to integrate with our UI
+            window.goatcounter.visit_count({
+                append: '#user-count',
+                attr: { 'data-label': 'Global Users: ' }
+            });
+            console.log("GoatCounter global stats requested");
+        }
+    }, 2000);
+
     // Track additional metrics
     trackUsageMetrics();
-
-    // Optional: Send to analytics service
-    // sendUserCountToServer(userCount);
 }
 
 function trackUsageMetrics() {
