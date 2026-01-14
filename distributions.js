@@ -39,32 +39,12 @@ function updateUserCount() {
     // Try to get the global count from GoatCounter
     setTimeout(() => {
         if (window.goatcounter && window.goatcounter.visit_count) {
-            console.log("Fetching GoatCounter stats...");
+            console.log("Fetching GoatCounter stats for footer...");
 
-            // 1. Update footer with global unique users
-            window.goatcounter.visit_count({
-                append: false, // Replace "Loading..." text
-                no_onload: true,
-                attr: { 'data-label': '' }
-            });
-            // The above default call uses the current page path and appends to the script's own position 
-            // OR we can be explicit:
+            // Update footer with global unique users
             window.goatcounter.visit_count({
                 append: '#user-count',
                 path: '/', // Get total site stats
-                attr: { 'data-label': '' }
-            });
-
-            // 2. Update About page elements
-            window.goatcounter.visit_count({
-                append: '#about-unique-users',
-                path: '/',
-                attr: { 'data-label': '' }
-            });
-
-            window.goatcounter.visit_count({
-                append: '#about-page-views',
-                path: '/',
                 attr: { 'data-label': '' }
             });
 
