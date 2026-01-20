@@ -709,6 +709,24 @@ footer {
     display: none !important;
 }
 
+#analytics-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 15px !important;
+    margin-bottom: 25px;
+}
+
+#analytics-grid>div {
+    padding: 15px !important;
+}
+
+/* Responsive adjustment for very small screens */
+@media (max-width: 768px) {
+    #analytics-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}
+
 /* Ensure content doesn't get covered by fixed footer */
 @media (max-width: 768px) {
     body {

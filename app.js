@@ -69,34 +69,57 @@ function toggleExplain(type) {
 }
 
 // Update analytics dashboard with messaging
+// Update analytics dashboard with messaging
 function updateAnalyticsDashboard() {
     const totalVisits = document.getElementById('total-visits');
     const todayVisits = document.getElementById('today-visits');
     const weekVisits = document.getElementById('week-visits');
     const uniqueVisits = document.getElementById('unique-visits');
     const topPagesList = document.getElementById('top-pages-list');
+    const userCount = document.getElementById('user-count');
 
-    // Show clickable cards that direct to full dashboard
-    if (totalVisits) {
-        totalVisits.innerHTML = '<div style="font-size: 20px; line-height: 1.4;">Click to<br/>View Data</div>';
-    }
-    if (todayVisits) {
-        todayVisits.innerHTML = '<div style="font-size: 20px; line-height: 1.4;">Click to<br/>View Data</div>';
-    }
-    if (weekVisits) {
-        weekVisits.innerHTML = '<div style="font-size: 20px; line-height: 1.4;">Click to<br/>View Data</div>';
-    }
-    if (uniqueVisits) {
-        uniqueVisits.innerHTML = '<div style="font-size: 20px; line-height: 1.4;">Click to<br/>View Data</div>';
+    // Attempt to get data from GoatCounter object if available
+    if (window.goatcounter && window.goatcounter.visit_count) {
+        // We have the total count!
+        const count = parseInt(window.goatcounter.visit_count, 10);
+        if (!isNaN(count)) {
+            if (totalVisits) totalVisits.textContent = count.toLocaleString();
+            if (userCount) userCount.textContent = count.toLocaleString();
+        }
+    } else {
+        // Keep checking for the count
+        setTimeout(updateAnalyticsDashboard, 1000);
     }
 
-    if (topPagesList) {
+    // Style for the "View" link/text in small cards
+    const viewText = '<div style="font-size: 14px; line-height: 1.2; padding-top: 4px;">View<br/>Data</div>';
+
+    // For other metrics we can't get without API, show a link
+    if (todayVisits && todayVisits.innerHTML === '--') {
+        todayVisits.innerHTML = viewText;
+    }
+    if (weekVisits && weekVisits.innerHTML === '--') {
+        weekVisits.innerHTML = viewText;
+    }
+    if (uniqueVisits && uniqueVisits.innerHTML === '--') {
+        uniqueVisits.innerHTML = viewText;
+    }
+
+    // If total visits is still distinct (haven't loaded count yet)
+    if (totalVisits && (totalVisits.innerHTML === '--')) {
+        totalVisits.innerHTML = '...';
+    }
+
+    if (topPagesList && topPagesList.innerHTML.includes('Loading')) {
         topPagesList.innerHTML = `
-            <div style="text-align: center; color: #34495e; padding: 15px;">
-                <div style="margin-bottom: 10px;">📊 Detailed analytics available on GoatCounter</div>
-                <div style="font-size: 13px; color: #6c757d; margin-top: 8px;">
-                    View visitor counts, page views, referrers, browsers, and more!
-                </div>
+            <div style="text-align: center; color: #34495e; padding: 10px;">
+                <div style="margin-bottom: 5px; font-weight: 500;">📊 View detailed page analytics</div>
+                <a href="https://stats-probability-visualizer.goatcounter.com" 
+                   target="_blank" 
+                   rel="noopener noreferrer"
+                   style="color: #667eea; font-weight: 600; text-decoration: none; font-size: 13px;">
+                    Open Dashboard →
+                </a>
             </div>
         `;
     }
