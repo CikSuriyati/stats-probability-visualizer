@@ -265,14 +265,69 @@
 
             <div id="about-stats-section"
                 style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 12px; padding: 25px; margin-bottom: 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-left: 4px solid #6c757d;">
-                <h3 style="color: #2c3e50; margin-bottom: 20px; font-size: 22px;">🌍 Global Usage Statistics</h3>
-                <div class="stats-iframe-container"
-                    style="width: 100%; height: 450px; border-radius: 8px; overflow: hidden; border: 1px solid #dee2e6; background: white;">
-                    <iframe src="https://stats-probability-visualizer.goatcounter.com?hideui=1"
-                        style="width: 100%; height: 100%; border: none;" title="GoatCounter Dashboard"></iframe>
+                <h3 style="color: #2c3e50; margin-bottom: 25px; font-size: 22px; text-align: center;">🌍 Live Analytics
+                    Dashboard</h3>
+
+                <!-- Stats Grid -->
+                <div id="analytics-grid"
+                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 25px;">
+                    <!-- Total Visitors Card -->
+                    <div
+                        style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; padding: 25px; box-shadow: 0 6px 16px rgba(102, 126, 234, 0.3); text-align: center;">
+                        <div
+                            style="font-size: 14px; color: rgba(255,255,255,0.8); margin-bottom: 8px; font-weight: 500;">
+                            📊 Total Visits</div>
+                        <div style="font-size: 42px; color: white; font-weight: bold;" id="total-visits">--</div>
+                    </div>
+
+                    <!-- Today's Visitors Card -->
+                    <div
+                        style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 12px; padding: 25px; box-shadow: 0 6px 16px rgba(245, 87, 108, 0.3); text-align: center;">
+                        <div
+                            style="font-size: 14px; color: rgba(255,255,255,0.8); margin-bottom: 8px; font-weight: 500;">
+                            🔥 Today</div>
+                        <div style="font-size: 42px; color: white; font-weight: bold;" id="today-visits">--</div>
+                    </div>
+
+                    <!-- This Week Card -->
+                    <div
+                        style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border-radius: 12px; padding: 25px; box-shadow: 0 6px 16px rgba(79, 172, 254, 0.3); text-align: center;">
+                        <div
+                            style="font-size: 14px; color: rgba(255,255,255,0.8); margin-bottom: 8px; font-weight: 500;">
+                            📅 This Week</div>
+                        <div style="font-size: 42px; color: white; font-weight: bold;" id="week-visits">--</div>
+                    </div>
+
+                    <!-- Unique Visitors Card -->
+                    <div
+                        style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); border-radius: 12px; padding: 25px; box-shadow: 0 6px 16px rgba(67, 233, 123, 0.3); text-align: center;">
+                        <div
+                            style="font-size: 14px; color: rgba(255,255,255,0.8); margin-bottom: 8px; font-weight: 500;">
+                            👥 Unique</div>
+                        <div style="font-size: 42px; color: white; font-weight: bold;" id="unique-visits">--</div>
+                    </div>
                 </div>
-                <p style="font-size: 12px; color: #6c757d; margin-top: 15px; font-style: italic;">
-                    Live dashboard provided by GoatCounter.
+
+                <!-- Top Pages Section -->
+                <div id="top-pages-section"
+                    style="background: white; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                    <h4 style="color: #2c3e50; margin: 0 0 15px 0; font-size: 16px;">📈 Most Visited Pages</h4>
+                    <div id="top-pages-list" style="font-size: 14px; color: #34495e;">
+                        <div style="text-align: center; color: #95a5a6; padding: 20px;">Loading...</div>
+                    </div>
+                </div>
+
+                <!-- View Full Dashboard Link -->
+                <div style="text-align: center;">
+                    <a href="https://stats-probability-visualizer.goatcounter.com" target="_blank"
+                        rel="noopener noreferrer"
+                        style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 8px; padding: 12px 30px; text-decoration: none; font-weight: 600; display: inline-block; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3); transition: transform 0.2s;">
+                        📊 View Detailed Analytics on GoatCounter
+                    </a>
+                </div>
+
+                <p style="font-size: 12px; color: #6c757d; margin-top: 20px; text-align: center; font-style: italic;">
+                    Live statistics powered by GoatCounter • Privacy-friendly analytics • Updates every 10 seconds
                 </p>
             </div>
 
