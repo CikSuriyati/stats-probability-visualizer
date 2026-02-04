@@ -69,7 +69,6 @@ function toggleExplain(type) {
 }
 
 // Update analytics dashboard with messaging
-// Update analytics dashboard with messaging
 function updateAnalyticsDashboard() {
     const totalVisits = document.getElementById('total-visits');
     const todayVisits = document.getElementById('today-visits');
@@ -78,39 +77,33 @@ function updateAnalyticsDashboard() {
     const topPagesList = document.getElementById('top-pages-list');
     const userCount = document.getElementById('user-count');
 
-    // Attempt to get data from GoatCounter object if available
-    if (window.goatcounter && window.goatcounter.visit_count) {
-        // We have the total count!
-        const count = parseInt(window.goatcounter.visit_count, 10);
-        if (!isNaN(count)) {
-            if (totalVisits) totalVisits.textContent = count.toLocaleString();
-            if (userCount) userCount.textContent = count.toLocaleString();
-        }
-    } else {
-        // Keep checking for the count
-        setTimeout(updateAnalyticsDashboard, 1000);
-    }
+    // Fetch total count from GoatCounter JSON API
+    // Using the public count.json endpoint
+    fetch('https://stats-probability-visualizer.goatcounter.com/count.json')
+        .then(response => response.json())
+        .then(data => {
+            if (data && data.count) {
+                const count = parseInt(data.count.replace(/,/g, ''), 10) || data.count;
+                const formattedCount = typeof count === 'number' ? count.toLocaleString() : count;
+
+                if (totalVisits) totalVisits.textContent = formattedCount;
+                if (userCount) userCount.textContent = formattedCount;
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching GoatCounter stats:', error);
+            if (totalVisits) totalVisits.innerHTML = '<span style="font-size: 14px;">View</span>';
+        });
 
     // Style for the "View" link/text in small cards
     const viewText = '<div style="font-size: 14px; line-height: 1.2; padding-top: 4px;">View<br/>Data</div>';
 
     // For other metrics we can't get without API, show a link
-    if (todayVisits && todayVisits.innerHTML === '--') {
-        todayVisits.innerHTML = viewText;
-    }
-    if (weekVisits && weekVisits.innerHTML === '--') {
-        weekVisits.innerHTML = viewText;
-    }
-    if (uniqueVisits && uniqueVisits.innerHTML === '--') {
-        uniqueVisits.innerHTML = viewText;
-    }
+    if (todayVisits) todayVisits.innerHTML = viewText;
+    if (weekVisits) weekVisits.innerHTML = viewText;
+    if (uniqueVisits) uniqueVisits.innerHTML = viewText;
 
-    // If total visits is still distinct (haven't loaded count yet)
-    if (totalVisits && (totalVisits.innerHTML === '--')) {
-        totalVisits.innerHTML = '...';
-    }
-
-    if (topPagesList && topPagesList.innerHTML.includes('Loading')) {
+    if (topPagesList) {
         topPagesList.innerHTML = `
             <div style="text-align: center; color: #34495e; padding: 10px;">
                 <div style="margin-bottom: 5px; font-weight: 500;">📊 View detailed page analytics</div>
