@@ -1,0 +1,25 @@
+# R artifacts
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
+# Node / Vite
+node_modules
+dist
+dist-ssr
+*.local
+*.tsbuildinfo
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor / OS
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.sw?
