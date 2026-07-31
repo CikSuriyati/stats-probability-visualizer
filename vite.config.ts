@@ -6,7 +6,7 @@ export default defineConfig({
   // Served at the domain root. For GitHub Pages under a repo subpath,
   // change this to "/stats-probability-visualizer/" and align the
   // GoatCounter path in index.html accordingly.
-  base: "/",
+  base: "/stats-probability-visualizer/",
   plugins: [react()],
   resolve: {
     alias: {
