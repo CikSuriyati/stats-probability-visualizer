@@ -178,9 +178,15 @@ export function binomialExplanation(
         shadedArea = `The shaded bars are outcomes ${x + 1} through ${n}, every value strictly above ${x}.`;
       }
     } else if (inequality === "ge") {
-      formula = `P(X \\ge ${x}) = 1 - P(X \\le ${x - 1}) = 1 - ${sum(0, x - 1)}`;
-      interpretation = `The probability of getting ${x} or more successes in ${n} trials, found with the complement rule: 1 minus the probability of getting fewer than ${x}.`;
-      shadedArea = `The shaded bars are outcomes ${x} through ${n}, the right tail of the distribution.`;
+      if (x <= 0) {
+        formula = `P(X \\ge ${x}) = 1`;
+        interpretation = `Every outcome of a binomial variable is at least 0, so this probability is exactly one.`;
+        shadedArea = `All bars are shaded, from 0 through ${n}.`;
+      } else {
+        formula = `P(X \\ge ${x}) = 1 - P(X \\le ${x - 1}) = 1 - ${sum(0, x - 1)}`;
+        interpretation = `The probability of getting ${x} or more successes in ${n} trials, found with the complement rule: 1 minus the probability of getting fewer than ${x}.`;
+        shadedArea = `The shaded bars are outcomes ${x} through ${n}, the right tail of the distribution.`;
+      }
     } else if (inequality === "between") {
       formula = `P(${x} \\le X \\le ${upper}) = ${sum(x, upper)}`;
       interpretation = `The probability of getting between ${x} and ${upper} successes in ${n} trials, summing every outcome in that range.`;
@@ -227,9 +233,15 @@ export function poissonExplanation(
     interpretation = `A strict inequality excludes ${x} itself. The complement rule is used: subtract the probability of ${x} or fewer from 1.`;
     shadedArea = `The shaded bars are every outcome above ${x}.`;
   } else if (inequality === "ge") {
-    formula = `P(X \\ge ${x}) = 1 - P(X \\le ${x - 1}) = 1 - ${sum(0, x - 1)}`;
-    interpretation = `The probability of getting ${x} or more events, found with the complement rule: 1 minus the probability of getting fewer than ${x}.`;
-    shadedArea = `The shaded bars are outcome ${x} and every outcome above it.`;
+    if (x <= 0) {
+      formula = `P(X \\ge ${x}) = 1`;
+      interpretation = `Every outcome of a Poisson variable is at least 0, so this probability is exactly one.`;
+      shadedArea = `All bars are shaded.`;
+    } else {
+      formula = `P(X \\ge ${x}) = 1 - P(X \\le ${x - 1}) = 1 - ${sum(0, x - 1)}`;
+      interpretation = `The probability of getting ${x} or more events, found with the complement rule: 1 minus the probability of getting fewer than ${x}.`;
+      shadedArea = `The shaded bars are outcome ${x} and every outcome above it.`;
+    }
   } else if (inequality === "between") {
     formula = `P(${x} \\le X \\le ${upper}) = ${sum(x, upper)}`;
     interpretation = `The probability of getting between ${x} and ${upper} events, summing every outcome in that range.`;
