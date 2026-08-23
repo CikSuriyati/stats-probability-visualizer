@@ -23,17 +23,54 @@ export function DistributionPlot({ spec }: DistributionPlotProps) {
   const colors = useChartColors();
 
   return (
-    <div className="h-[380px] w-full sm:h-[440px]">
-      {/*
-        ResponsiveContainer injects width/height into its DIRECT child, so the
-        chart element must be returned inline (not wrapped in a component).
-      */}
-      <ResponsiveContainer width="100%" height="100%">
-        {spec.kind === "continuous"
-          ? continuousChart(spec, colors)
-          : discreteChart(spec, colors)}
-      </ResponsiveContainer>
+    <div className="w-full">
+      <div className="h-[360px] w-full sm:h-[420px]">
+        {/*
+          ResponsiveContainer injects width/height into its DIRECT child, so the
+          chart element must be returned inline (not wrapped in a component).
+        */}
+        <ResponsiveContainer width="100%" height="100%">
+          {spec.kind === "continuous"
+            ? continuousChart(spec, colors)
+            : discreteChart(spec, colors)}
+        </ResponsiveContainer>
+      </div>
+      <ChartLegend kind={spec.kind} colors={colors} />
     </div>
+  );
+}
+
+/**
+ * With two series, identity must not rest on colour alone — a reader with
+ * colour-vision deficiency needs the names. Rendered in markup rather than via
+ * Recharts' Legend because the discrete chart colours per-Cell, which Recharts
+ * would report as a single series.
+ */
+function ChartLegend({ kind, colors }: { kind: PlotSpec["kind"]; colors: ChartColors }) {
+  const items =
+    kind === "continuous"
+      ? [
+          { color: colors.pdf, label: "Density curve" },
+          { color: colors.area, label: "Probability area" },
+        ]
+      : [
+          { color: colors.area, label: "Included outcomes" },
+          { color: colors.pdf, label: "Other outcomes" },
+        ];
+
+  return (
+    <ul className="mt-1 flex flex-wrap items-center justify-center gap-x-5 gap-y-1.5">
+      {items.map((item) => (
+        <li key={item.label} className="flex items-center gap-1.5 text-xs text-muted-foreground">
+          <span
+            aria-hidden="true"
+            className="h-2.5 w-2.5 shrink-0 rounded-sm"
+            style={{ backgroundColor: item.color }}
+          />
+          {item.label}
+        </li>
+      ))}
+    </ul>
   );
 }
 

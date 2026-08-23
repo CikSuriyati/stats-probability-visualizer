@@ -6,9 +6,23 @@ curve/PMF, and a step-by-step formula explanation.
 
 > _"See the curve, understand the concept."_
 
+## Version history
+
+| Version | Change |
+|---|---|
+| 1.0 | Four distributions; probability from a value; shaded plot |
+| 2.0 | Generated explanations; continuity correction; precision control |
+| 2.1 | KaTeX typesetting; modular refactor; usage analytics |
+| 2.2 | React + TypeScript + Tailwind rewrite; `user-scalable=no` removed (WCAG 1.4.4) |
+| 2.3 | Explanation panel fixed for strict inequalities; k = 0 guard |
+| 2.4 | Landing worked example; clickable examples; three more `between` forms; clear button; typography and palette refresh |
+
+The displayed version lives in `src/lib/version.ts` and should match both
+`package.json` and the release's git tag.
+
 ## Tech stack
 
-Rebuilt (v2.0) as a modern single-page app:
+Rebuilt (v2.2+) as a modern single-page app:
 
 - **Vite** + **React 18** + **TypeScript**
 - **Tailwind CSS** + **shadcn/ui** (Radix primitives) — neutral design system, light/dark mode

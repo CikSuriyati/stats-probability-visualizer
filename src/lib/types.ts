@@ -5,7 +5,67 @@ export type Distribution = ContinuousDistribution | DiscreteDistribution;
 export type TabKind = "continuous" | "discrete";
 
 /** Inequality operators. `eq` is only used by discrete distributions. */
-export type Inequality = "lt" | "le" | "gt" | "ge" | "between" | "eq";
+export type Inequality =
+  | "lt"
+  | "le"
+  | "gt"
+  | "ge"
+  | "eq"
+  /** a ≤ X ≤ b */
+  | "between"
+  /** a < X < b */
+  | "betweenStrict"
+  /** a ≤ X < b */
+  | "betweenLeftIn"
+  /** a < X ≤ b */
+  | "betweenRightIn";
+
+export const BETWEEN_FORMS = [
+  "between",
+  "betweenStrict",
+  "betweenLeftIn",
+  "betweenRightIn",
+] as const satisfies readonly Inequality[];
+
+/** True for any two-bound form, all of which need an upper-bound input. */
+export function isBetween(inequality: Inequality): boolean {
+  return (BETWEEN_FORMS as readonly Inequality[]).includes(inequality);
+}
+
+/**
+ * Cumulative indices for a discrete two-bound form: the probability is
+ * F(cdfUpper) − F(cdfLower), and the included outcomes are
+ * cdfLower+1 … cdfUpper. Continuity-corrected bounds are these plus 0.5.
+ */
+export function discreteBetweenBounds(
+  inequality: Inequality,
+  a: number,
+  b: number,
+): { cdfLower: number; cdfUpper: number } {
+  switch (inequality) {
+    case "betweenStrict": // a < X < b  ->  a+1 … b-1
+      return { cdfLower: a, cdfUpper: b - 1 };
+    case "betweenLeftIn": // a ≤ X < b  ->  a … b-1
+      return { cdfLower: a - 1, cdfUpper: b - 1 };
+    case "betweenRightIn": // a < X ≤ b  ->  a+1 … b
+      return { cdfLower: a, cdfUpper: b };
+    default: // between: a ≤ X ≤ b  ->  a … b
+      return { cdfLower: a - 1, cdfUpper: b };
+  }
+}
+
+/** Human-readable label, e.g. "P(a < X ≤ b)". */
+export const INEQUALITY_LABELS: Record<Inequality, string> = {
+  eq: "P(X = k)",
+  lt: "P(X < x)",
+  le: "P(X ≤ x)",
+  gt: "P(X > x)",
+  ge: "P(X ≥ x)",
+  between: "P(a ≤ X ≤ b)",
+  betweenStrict: "P(a < X < b)",
+  betweenLeftIn: "P(a ≤ X < b)",
+  betweenRightIn: "P(a < X ≤ b)",
+};
 
 export type Precision = 4 | 6;
 
@@ -49,6 +109,8 @@ export interface CalcResult {
   distribution: Distribution;
   probability: number;
   precision: Precision;
+  /** True for the prefilled landing example; cleared once the user calculates. */
+  isExample?: boolean;
   /** Formatted probability string, honouring precision + any prefix. */
   display: string;
   /** Optional extra lines (method used, distribution info, warnings). */

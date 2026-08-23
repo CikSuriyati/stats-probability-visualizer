@@ -2,82 +2,101 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+  Palette notes
+  -------------
+  Neutrals are warm (hue ~35–45) rather than the cool blue-grey they used to be,
+  so they sit with the amber accent instead of fighting it.
+
+  In light mode the page and the cards are no longer both pure white: the page
+  is a warm off-white and cards sit just above it, so panels read as panels
+  without needing heavy borders.
+
+  The two chart series are the validated blue/orange steps, checked with the
+  dataviz palette validator against these exact surfaces — light card #fcfcfb
+  and dark card #141d33. Both modes pass the lightness band, chroma floor,
+  colour-blind separation (worst adjacent ΔE 24.7 light / 26.8 dark, target ≥8),
+  the normal-vision floor, and 3:1 contrast against their surface. The dark
+  steps are selected for the dark surface, not a lightened flip of the light
+  ones. Re-run the validator if you change either surface.
+*/
+
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222 47% 11%;
+    --background: 42 33% 97%;
+    --foreground: 30 12% 11%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card: 45 43% 99%;
+    --card-foreground: 30 12% 11%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover: 45 43% 99%;
+    --popover-foreground: 30 12% 11%;
 
-    /* Warm amber accent, carried over from the original brand but used sparingly */
-    --primary: 25 95% 45%;
-    --primary-foreground: 0 0% 100%;
+    /* Deep warm amber: reads as a filled button against white text. */
+    --primary: 18 87% 45%;
+    --primary-foreground: 45 40% 99%;
 
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222 47% 11%;
+    --secondary: 40 22% 94%;
+    --secondary-foreground: 30 12% 11%;
 
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
+    --muted: 40 22% 94%;
+    --muted-foreground: 35 9% 42%;
 
-    --accent: 210 40% 96%;
-    --accent-foreground: 222 47% 11%;
+    --accent: 40 24% 92%;
+    --accent-foreground: 30 12% 11%;
 
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive: 0 68% 47%;
+    --destructive-foreground: 45 40% 99%;
 
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 25 95% 45%;
+    --border: 40 17% 87%;
+    --input: 40 17% 87%;
+    --ring: 18 87% 45%;
 
     --radius: 0.5rem;
 
-    /* Chart palette (light) */
-    --chart-1: 25 95% 53%; /* amber — probability area */
-    --chart-2: 217 91% 60%; /* blue — pdf/pmf base */
-    --chart-3: 142 71% 45%; /* green */
-    --chart-4: 262 83% 58%; /* violet */
-    --chart-5: 199 89% 48%; /* cyan */
+    /* Chart series — validated against the light card surface. */
+    --chart-1: 17 82% 56%; /* orange — probability area */
+    --chart-2: 213 68% 50%; /* blue — pdf / pmf base */
+    --chart-3: 163 73% 40%; /* aqua */
+    --chart-4: 41 100% 46%; /* yellow */
+    --chart-5: 340 71% 70%; /* magenta */
   }
 
   .dark {
-    --background: 222 47% 11%;
-    --foreground: 210 40% 98%;
+    --background: 222 42% 9%;
+    --foreground: 40 22% 96%;
 
-    --card: 222 44% 14%;
-    --card-foreground: 210 40% 98%;
+    --card: 222 36% 13%;
+    --card-foreground: 40 22% 96%;
 
-    --popover: 222 44% 14%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 222 36% 13%;
+    --popover-foreground: 40 22% 96%;
 
-    --primary: 25 95% 55%;
-    --primary-foreground: 222 47% 11%;
+    --primary: 18 85% 55%;
+    --primary-foreground: 222 42% 9%;
 
-    --secondary: 217 33% 20%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 220 27% 18%;
+    --secondary-foreground: 40 22% 96%;
 
-    --muted: 217 33% 20%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 220 27% 18%;
+    --muted-foreground: 40 10% 66%;
 
-    --accent: 217 33% 24%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 220 25% 22%;
+    --accent-foreground: 40 22% 96%;
 
-    --destructive: 0 63% 50%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 40 22% 96%;
 
-    --border: 217 33% 24%;
-    --input: 217 33% 24%;
-    --ring: 25 95% 55%;
+    --border: 220 24% 22%;
+    --input: 220 24% 22%;
+    --ring: 18 85% 55%;
 
-    /* Chart palette (dark) */
-    --chart-1: 25 95% 58%;
-    --chart-2: 217 91% 68%;
-    --chart-3: 142 69% 58%;
-    --chart-4: 262 83% 70%;
-    --chart-5: 199 89% 60%;
+    /* Chart series — selected for the dark card surface, not a flip. */
+    --chart-1: 17 70% 50%; /* orange — probability area */
+    --chart-2: 213 77% 56%; /* blue — pdf / pmf base */
+    --chart-3: 163 72% 36%; /* aqua */
+    --chart-4: 39 100% 39%; /* yellow */
+    --chart-5: 338 61% 58%; /* magenta */
   }
 }
 

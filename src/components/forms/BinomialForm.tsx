@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   Field,
+  FieldRow,
   FormError,
   InequalitySelect,
   PrecisionRadio,
@@ -14,19 +15,28 @@ import {
 import { binomialProbability, ValidationError } from "@/lib/stats";
 import { binomialPmf } from "@/lib/plot-data";
 import { binomialExplanation } from "@/lib/explanations";
-import type { CalcResult, Inequality, Precision } from "@/lib/types";
+import { isBetween, type CalcResult, type Inequality, type Precision } from "@/lib/types";
+import type { ExampleFields } from "@/lib/examples";
 
-export function BinomialForm({ onResult }: { onResult: (r: CalcResult) => void }) {
-  const [n, setN] = useState("");
-  const [p, setP] = useState("");
-  const [inequality, setInequality] = useState<Inequality>("le");
-  const [x, setX] = useState("");
-  const [upper, setUpper] = useState("");
-  const [continuity, setContinuity] = useState(false);
+export function BinomialForm({
+  onResult,
+  initial,
+}: {
+  onResult: (r: CalcResult) => void;
+  initial?: ExampleFields;
+}) {
+  const [n, setN] = useState(initial?.n ?? "");
+  const [p, setP] = useState(initial?.p ?? "");
+  const [inequality, setInequality] = useState<Inequality>(
+    (initial?.inequality as Inequality) ?? "le",
+  );
+  const [x, setX] = useState(initial?.x ?? "");
+  const [upper, setUpper] = useState(initial?.upper ?? "");
+  const [continuity, setContinuity] = useState(initial?.continuity === "true");
   const [precision, setPrecision] = useState<Precision>(4);
   const [error, setError] = useState<string | null>(null);
 
-  const isBetween = inequality === "between";
+  const twoBound = isBetween(inequality);
 
   function handleCalculate() {
     const params = {
@@ -78,13 +88,18 @@ export function BinomialForm({ onResult }: { onResult: (r: CalcResult) => void }
 
       <InequalitySelect value={inequality} onChange={setInequality} discrete />
 
-      <Field label={isBetween ? "Lower bound (a)" : "X value (k)"} htmlFor="binom-x">
-        <Input id="binom-x" type="number" placeholder="e.g. 5" value={x} onChange={(e) => setX(e.target.value)} />
-      </Field>
-
-      {isBetween && (
-        <Field label="Upper bound (b)" htmlFor="binom-upper">
-          <Input id="binom-upper" type="number" placeholder="e.g. 10" value={upper} onChange={(e) => setUpper(e.target.value)} />
+      {twoBound ? (
+        <FieldRow>
+          <Field label="Lower bound (a)" htmlFor="binom-x">
+            <Input id="binom-x" type="number" placeholder="e.g. 5" value={x} onChange={(e) => setX(e.target.value)} />
+          </Field>
+          <Field label="Upper bound (b)" htmlFor="binom-upper">
+            <Input id="binom-upper" type="number" placeholder="e.g. 10" value={upper} onChange={(e) => setUpper(e.target.value)} />
+          </Field>
+        </FieldRow>
+      ) : (
+        <Field label="X value (k)" htmlFor="binom-x">
+          <Input id="binom-x" type="number" placeholder="e.g. 5" value={x} onChange={(e) => setX(e.target.value)} />
         </Field>
       )}
 

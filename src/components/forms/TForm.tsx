@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Field,
+  FieldRow,
   FormError,
   InequalitySelect,
   PrecisionRadio,
@@ -12,17 +13,26 @@ import {
 import { tProbability, ValidationError } from "@/lib/stats";
 import { tCurve } from "@/lib/plot-data";
 import { tExplanation } from "@/lib/explanations";
-import type { CalcResult, Inequality, Precision } from "@/lib/types";
+import { isBetween, type CalcResult, type Inequality, type Precision } from "@/lib/types";
+import type { ExampleFields } from "@/lib/examples";
 
-export function TForm({ onResult }: { onResult: (r: CalcResult) => void }) {
-  const [df, setDf] = useState("");
-  const [inequality, setInequality] = useState<Inequality>("lt");
-  const [x, setX] = useState("");
-  const [upper, setUpper] = useState("");
+export function TForm({
+  onResult,
+  initial,
+}: {
+  onResult: (r: CalcResult) => void;
+  initial?: ExampleFields;
+}) {
+  const [df, setDf] = useState(initial?.df ?? "");
+  const [inequality, setInequality] = useState<Inequality>(
+    (initial?.inequality as Inequality) ?? "lt",
+  );
+  const [x, setX] = useState(initial?.x ?? "");
+  const [upper, setUpper] = useState(initial?.upper ?? "");
   const [precision, setPrecision] = useState<Precision>(4);
   const [error, setError] = useState<string | null>(null);
 
-  const isBetween = inequality === "between";
+  const twoBound = isBetween(inequality);
 
   function handleCalculate() {
     const params = {
@@ -45,7 +55,7 @@ export function TForm({ onResult }: { onResult: (r: CalcResult) => void }) {
           kind: "continuous",
           data,
           refX: params.x,
-          refUpper: isBetween ? params.upper : null,
+          refUpper: twoBound ? params.upper : null,
           refLabel: `t = ${params.x}`,
           xLabel: "t",
         },
@@ -66,13 +76,18 @@ export function TForm({ onResult }: { onResult: (r: CalcResult) => void }) {
 
       <InequalitySelect value={inequality} onChange={setInequality} />
 
-      <Field label={isBetween ? "Lower bound (a)" : "X value"} htmlFor="t-x">
-        <Input id="t-x" type="number" value={x} onChange={(e) => setX(e.target.value)} />
-      </Field>
-
-      {isBetween && (
-        <Field label="Upper bound (b)" htmlFor="t-upper">
-          <Input id="t-upper" type="number" value={upper} onChange={(e) => setUpper(e.target.value)} />
+      {twoBound ? (
+        <FieldRow>
+          <Field label="Lower bound (a)" htmlFor="t-x">
+            <Input id="t-x" type="number" value={x} onChange={(e) => setX(e.target.value)} />
+          </Field>
+          <Field label="Upper bound (b)" htmlFor="t-upper">
+            <Input id="t-upper" type="number" value={upper} onChange={(e) => setUpper(e.target.value)} />
+          </Field>
+        </FieldRow>
+      ) : (
+        <Field label="X value" htmlFor="t-x">
+          <Input id="t-x" type="number" value={x} onChange={(e) => setX(e.target.value)} />
         </Field>
       )}
 

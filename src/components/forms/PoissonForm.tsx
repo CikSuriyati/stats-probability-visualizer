@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Field,
+  FieldRow,
   FormError,
   InequalitySelect,
   PrecisionRadio,
@@ -12,17 +13,26 @@ import {
 import { poissonProbability, ValidationError } from "@/lib/stats";
 import { poissonPmf } from "@/lib/plot-data";
 import { poissonExplanation } from "@/lib/explanations";
-import type { CalcResult, Inequality, Precision } from "@/lib/types";
+import { isBetween, type CalcResult, type Inequality, type Precision } from "@/lib/types";
+import type { ExampleFields } from "@/lib/examples";
 
-export function PoissonForm({ onResult }: { onResult: (r: CalcResult) => void }) {
-  const [lambda, setLambda] = useState("");
-  const [inequality, setInequality] = useState<Inequality>("le");
-  const [x, setX] = useState("");
-  const [upper, setUpper] = useState("");
+export function PoissonForm({
+  onResult,
+  initial,
+}: {
+  onResult: (r: CalcResult) => void;
+  initial?: ExampleFields;
+}) {
+  const [lambda, setLambda] = useState(initial?.lambda ?? "");
+  const [inequality, setInequality] = useState<Inequality>(
+    (initial?.inequality as Inequality) ?? "le",
+  );
+  const [x, setX] = useState(initial?.x ?? "");
+  const [upper, setUpper] = useState(initial?.upper ?? "");
   const [precision, setPrecision] = useState<Precision>(4);
   const [error, setError] = useState<string | null>(null);
 
-  const isBetween = inequality === "between";
+  const twoBound = isBetween(inequality);
 
   function handleCalculate() {
     const params = {
@@ -64,13 +74,18 @@ export function PoissonForm({ onResult }: { onResult: (r: CalcResult) => void })
 
       <InequalitySelect value={inequality} onChange={setInequality} discrete />
 
-      <Field label={isBetween ? "Lower bound (a)" : "X value (k)"} htmlFor="pois-x">
-        <Input id="pois-x" type="number" placeholder="e.g. 2" value={x} onChange={(e) => setX(e.target.value)} />
-      </Field>
-
-      {isBetween && (
-        <Field label="Upper bound (b)" htmlFor="pois-upper">
-          <Input id="pois-upper" type="number" placeholder="e.g. 5" value={upper} onChange={(e) => setUpper(e.target.value)} />
+      {twoBound ? (
+        <FieldRow>
+          <Field label="Lower bound (a)" htmlFor="pois-x">
+            <Input id="pois-x" type="number" placeholder="e.g. 2" value={x} onChange={(e) => setX(e.target.value)} />
+          </Field>
+          <Field label="Upper bound (b)" htmlFor="pois-upper">
+            <Input id="pois-upper" type="number" placeholder="e.g. 5" value={upper} onChange={(e) => setUpper(e.target.value)} />
+          </Field>
+        </FieldRow>
+      ) : (
+        <Field label="X value (k)" htmlFor="pois-x">
+          <Input id="pois-x" type="number" placeholder="e.g. 2" value={x} onChange={(e) => setX(e.target.value)} />
         </Field>
       )}
 

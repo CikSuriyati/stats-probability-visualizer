@@ -1,6 +1,7 @@
 import { BinomialForm } from "@/components/forms/BinomialForm";
 import { PoissonForm } from "@/components/forms/PoissonForm";
 import { DistributionWorkspace } from "@/components/tabs/DistributionWorkspace";
+import type { ExampleFields } from "@/lib/examples";
 import type { CalcResult, Distribution } from "@/lib/types";
 
 const OPTIONS = [
@@ -8,15 +9,27 @@ const OPTIONS = [
   { value: "poisson" as Distribution, label: "Poisson distribution" },
 ];
 
-export function DiscreteTab() {
+interface TabProps {
+  requestedExample?: { distribution: Distribution; nonce: number } | null;
+  onPickExample: (d: Distribution) => void;
+}
+
+export function DiscreteTab({ requestedExample, onPickExample }: TabProps) {
   return (
     <DistributionWorkspace
       options={OPTIONS}
-      renderForm={(dist: Distribution, onResult: (r: CalcResult) => void) =>
+      defaultDistribution="binomial"
+      requestedExample={requestedExample}
+      onPickExample={onPickExample}
+      renderForm={(
+        dist: Distribution,
+        onResult: (r: CalcResult) => void,
+        initial: ExampleFields | undefined,
+      ) =>
         dist === "binomial" ? (
-          <BinomialForm onResult={onResult} />
+          <BinomialForm onResult={onResult} initial={initial} />
         ) : (
-          <PoissonForm onResult={onResult} />
+          <PoissonForm onResult={onResult} initial={initial} />
         )
       }
     />

@@ -8,7 +8,7 @@ export function WelcomeState() {
       <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary">
         <BarChart3 className="h-7 w-7" />
       </div>
-      <h3 className="mb-2 text-lg font-semibold">Welcome to ProbViz</h3>
+      <h3 className="mb-2 font-serif text-xl font-semibold">Welcome to ProbViz</h3>
       <p className="mb-5 max-w-md text-sm leading-relaxed text-muted-foreground">
         Select a distribution on the left and enter your values to see the probability
         visualization come to life.

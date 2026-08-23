@@ -1,4 +1,4 @@
-import type { Explanation, Inequality } from "./types";
+import { discreteBetweenBounds, isBetween, type Explanation, type Inequality } from "./types";
 
 const INEQUALITY_LATEX: Record<Inequality, string> = {
   eq: "=",
@@ -7,7 +7,26 @@ const INEQUALITY_LATEX: Record<Inequality, string> = {
   gt: ">",
   ge: "\\ge",
   between: "\\in",
+  betweenStrict: "\\in",
+  betweenLeftIn: "\\in",
+  betweenRightIn: "\\in",
 };
+
+/** The two comparison symbols for a two-bound form, as LaTeX. */
+function betweenSymbols(inequality: Inequality): { lo: string; hi: string } {
+  return {
+    lo: inequality === "between" || inequality === "betweenLeftIn" ? "\\le" : "<",
+    hi: inequality === "between" || inequality === "betweenRightIn" ? "\\le" : "<",
+  };
+}
+
+/** Plain-text version of the same, for prose. */
+function betweenWords(inequality: Inequality): { lo: string; hi: string } {
+  return {
+    lo: inequality === "between" || inequality === "betweenLeftIn" ? "at least" : "greater than",
+    hi: inequality === "between" || inequality === "betweenRightIn" ? "at most" : "less than",
+  };
+}
 
 /**
  * Guards against a missing branch. Without this, an unhandled inequality
@@ -54,9 +73,10 @@ export function normalExplanation(
     formula = `P(X \\ge ${x}) = 1 - \\Phi(${z.toFixed(4)})`;
     interpretation = `This represents the probability that a randomly selected value from the normal distribution is greater than or equal to ${x}. We use the complement rule: $1$ minus the probability of being less than ${x}.`;
     shadedArea = `The shaded area under the curve represents all values from ${x} to $+\\infty$, which corresponds to the right tail probability.`;
-  } else if (inequality === "between") {
-    formula = `P(${x} \\le X \\le ${upper}) = \\Phi(${zUpper?.toFixed(4)}) - \\Phi(${z.toFixed(4)})`;
-    interpretation = `This represents the probability that a randomly selected value falls between ${x} and ${upper}. We subtract the cumulative probability at the lower bound from the upper bound.`;
+  } else if (isBetween(inequality)) {
+    const { lo, hi } = betweenSymbols(inequality);
+    formula = `P(${x} ${lo} X ${hi} ${upper}) = \\Phi(${zUpper?.toFixed(4)}) - \\Phi(${z.toFixed(4)})`;
+    interpretation = `This represents the probability that a randomly selected value falls between ${x} and ${upper}. We subtract the cumulative probability at the lower bound from the upper bound. For a continuous distribution a single point carries no probability, so the strict and non-strict forms give the same answer.`;
     shadedArea = `The shaded area under the curve represents all values between ${x} and ${upper}, showing the probability mass in this interval.`;
   }
 
@@ -93,9 +113,10 @@ export function tExplanation(
     formula = `P(T \\ge ${x}) = 1 - F(${x}; ${df})`;
     interpretation = `This represents the probability that a t-statistic with ${df} degrees of freedom is greater than or equal to ${x}. We use the complement rule since the t-distribution is symmetric.`;
     shadedArea = `The shaded area under the t-distribution curve represents all values from ${x} to $+\\infty$, showing the right tail probability.`;
-  } else if (inequality === "between") {
-    formula = `P(${x} \\le T \\le ${upper}) = F(${upper}; ${df}) - F(${x}; ${df})`;
-    interpretation = `This represents the probability that a t-statistic with ${df} degrees of freedom falls between ${x} and ${upper}. The t-distribution becomes more normal-like as degrees of freedom increase.`;
+  } else if (isBetween(inequality)) {
+    const { lo, hi } = betweenSymbols(inequality);
+    formula = `P(${x} ${lo} T ${hi} ${upper}) = F(${upper}; ${df}) - F(${x}; ${df})`;
+    interpretation = `This represents the probability that a t-statistic with ${df} degrees of freedom falls between ${x} and ${upper}. For a continuous distribution a single point carries no probability, so the strict and non-strict forms give the same answer.`;
     shadedArea = `The shaded area under the t-distribution curve represents all values between ${x} and ${upper}, showing the probability mass in this interval.`;
   }
 
@@ -124,9 +145,15 @@ export function binomialExplanation(
       interpretation = `Using the normal approximation with continuity correction. The discrete binomial is approximated by a continuous normal distribution, widening the single value ${x} by plus or minus 0.5.`;
       shadedArea = `The shaded area is the probability of exactly ${x} successes, approximated by the area under the normal curve between ${x - 0.5} and ${x + 0.5}.`;
     } else if (inequality === "lt") {
-      formula = `P(X < ${x}) \\approx P(Y \\le ${x - 0.5}) \\text{ where } ${normal}`;
-      interpretation = `Using the normal approximation with continuity correction. A strict inequality excludes ${x} itself, so the upper bound is ${x} minus 0.5.`;
-      shadedArea = `The shaded area is the probability of fewer than ${x} successes, approximated by the area under the normal curve up to ${x - 0.5}.`;
+      if (x <= 0) {
+        formula = `P(X < ${x}) = 0`;
+        interpretation = `A binomial count cannot fall below 0, so this probability is exactly zero. The normal approximation is not used here — it would otherwise place a little probability on impossible outcomes.`;
+        shadedArea = `No area is shaded, because no outcome satisfies X < ${x}.`;
+      } else {
+        formula = `P(X < ${x}) \\approx P(Y \\le ${x - 0.5}) \\text{ where } ${normal}`;
+        interpretation = `Using the normal approximation with continuity correction. A strict inequality excludes ${x} itself, so the upper bound is ${x} minus 0.5.`;
+        shadedArea = `The shaded area is the probability of fewer than ${x} successes, approximated by the area under the normal curve up to ${x - 0.5}.`;
+      }
     } else if (inequality === "le") {
       formula = `P(X \\le ${x}) \\approx P(Y \\le ${x + 0.5}) \\text{ where } ${normal}`;
       interpretation = `Using the normal approximation with continuity correction. Adding 0.5 to the upper bound accounts for the discrete nature of the binomial distribution.`;
@@ -136,13 +163,23 @@ export function binomialExplanation(
       interpretation = `Using the normal approximation with continuity correction. A strict inequality excludes ${x} itself, so the lower bound is ${x} plus 0.5.`;
       shadedArea = `The shaded area is the probability of more than ${x} successes, approximated by the area under the normal curve from ${x + 0.5} onwards.`;
     } else if (inequality === "ge") {
-      formula = `P(X \\ge ${x}) \\approx P(Y \\ge ${x - 0.5}) \\text{ where } ${normal}`;
-      interpretation = `Using the normal approximation with continuity correction. Subtracting 0.5 from the lower bound accounts for the discrete nature of the binomial distribution.`;
-      shadedArea = `The shaded area is the probability of ${x} or more successes, approximated by the area under the normal curve from ${x - 0.5} onwards.`;
-    } else if (inequality === "between") {
-      formula = `P(${x} \\le X \\le ${upper}) \\approx P(${x - 0.5} \\le Y \\le ${upper + 0.5}) \\text{ where } ${normal}`;
-      interpretation = `Using the normal approximation with continuity correction. Both bounds are widened by 0.5 to better approximate the discrete binomial probabilities.`;
-      shadedArea = `The shaded area is the probability of between ${x} and ${upper} successes, approximated by the area under the normal curve between ${x - 0.5} and ${upper + 0.5}.`;
+      if (x <= 0) {
+        formula = `P(X \\ge ${x}) = 1`;
+        interpretation = `Every binomial count is at least 0, so this probability is exactly one. The normal approximation is not used here — it would otherwise fall a little short of 1.`;
+        shadedArea = `The whole distribution is shaded, from 0 through ${n}.`;
+      } else {
+        formula = `P(X \\ge ${x}) \\approx P(Y \\ge ${x - 0.5}) \\text{ where } ${normal}`;
+        interpretation = `Using the normal approximation with continuity correction. Subtracting 0.5 from the lower bound accounts for the discrete nature of the binomial distribution.`;
+        shadedArea = `The shaded area is the probability of ${x} or more successes, approximated by the area under the normal curve from ${x - 0.5} onwards.`;
+      }
+    } else if (isBetween(inequality)) {
+      const { cdfLower, cdfUpper } = discreteBetweenBounds(inequality, x, upper);
+      const { lo, hi } = betweenSymbols(inequality);
+      const loB = cdfLower + 0.5;
+      const hiB = cdfUpper + 0.5;
+      formula = `P(${x} ${lo} X ${hi} ${upper}) \\approx P(${loB} \\le Y \\le ${hiB}) \\text{ where } ${normal}`;
+      interpretation = `Using the normal approximation with continuity correction. The outcomes included are ${cdfLower + 1} through ${cdfUpper}, and those integers are widened by 0.5 on each side.`;
+      shadedArea = `The shaded area is the probability of ${cdfLower + 1} to ${cdfUpper} successes, approximated by the area under the normal curve between ${loB} and ${hiB}.`;
     }
   } else {
     const q = (1 - p).toFixed(4);
@@ -187,10 +224,19 @@ export function binomialExplanation(
         interpretation = `The probability of getting ${x} or more successes in ${n} trials, found with the complement rule: 1 minus the probability of getting fewer than ${x}.`;
         shadedArea = `The shaded bars are outcomes ${x} through ${n}, the right tail of the distribution.`;
       }
-    } else if (inequality === "between") {
-      formula = `P(${x} \\le X \\le ${upper}) = ${sum(x, upper)}`;
-      interpretation = `The probability of getting between ${x} and ${upper} successes in ${n} trials, summing every outcome in that range.`;
-      shadedArea = `The shaded bars are outcomes ${x} through ${upper}.`;
+    } else if (isBetween(inequality)) {
+      const { cdfLower, cdfUpper } = discreteBetweenBounds(inequality, x, upper);
+      const { lo, hi } = betweenSymbols(inequality);
+      const { lo: loW, hi: hiW } = betweenWords(inequality);
+      if (cdfUpper < cdfLower + 1) {
+        formula = `P(${x} ${lo} X ${hi} ${upper}) = 0`;
+        interpretation = `No whole number is ${loW} ${x} and also ${hiW} ${upper}, so this probability is exactly zero.`;
+        shadedArea = `No bars are shaded, because no outcome satisfies both bounds.`;
+      } else {
+        formula = `P(${x} ${lo} X ${hi} ${upper}) = ${sum(cdfLower + 1, cdfUpper)}`;
+        interpretation = `The outcomes that satisfy this are ${cdfLower + 1} through ${cdfUpper}, since a count must be ${loW} ${x} and ${hiW} ${upper}. Their probabilities are summed.`;
+        shadedArea = `The shaded bars are outcomes ${cdfLower + 1} through ${cdfUpper}.`;
+      }
     }
   }
 
@@ -242,10 +288,19 @@ export function poissonExplanation(
       interpretation = `The probability of getting ${x} or more events, found with the complement rule: 1 minus the probability of getting fewer than ${x}.`;
       shadedArea = `The shaded bars are outcome ${x} and every outcome above it.`;
     }
-  } else if (inequality === "between") {
-    formula = `P(${x} \\le X \\le ${upper}) = ${sum(x, upper)}`;
-    interpretation = `The probability of getting between ${x} and ${upper} events, summing every outcome in that range.`;
-    shadedArea = `The shaded bars are outcomes ${x} through ${upper}.`;
+  } else if (isBetween(inequality)) {
+    const { cdfLower, cdfUpper } = discreteBetweenBounds(inequality, x, upper);
+    const { lo, hi } = betweenSymbols(inequality);
+    const { lo: loW, hi: hiW } = betweenWords(inequality);
+    if (cdfUpper < cdfLower + 1) {
+      formula = `P(${x} ${lo} X ${hi} ${upper}) = 0`;
+      interpretation = `No whole number is ${loW} ${x} and also ${hiW} ${upper}, so this probability is exactly zero.`;
+      shadedArea = `No bars are shaded, because no outcome satisfies both bounds.`;
+    } else {
+      formula = `P(${x} ${lo} X ${hi} ${upper}) = ${sum(cdfLower + 1, cdfUpper)}`;
+      interpretation = `The outcomes that satisfy this are ${cdfLower + 1} through ${cdfUpper}, since a count must be ${loW} ${x} and ${hiW} ${upper}. Their probabilities are summed.`;
+      shadedArea = `The shaded bars are outcomes ${cdfLower + 1} through ${cdfUpper}.`;
+    }
   }
 
   return ensureComplete({ formula, interpretation, shadedArea }, inequality, x);

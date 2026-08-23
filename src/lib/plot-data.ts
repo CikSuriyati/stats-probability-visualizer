@@ -1,5 +1,5 @@
 import { jStat } from "jstat";
-import type { Inequality, PlotPoint } from "./types";
+import { discreteBetweenBounds, isBetween, type Inequality, type PlotPoint } from "./types";
 
 /** Whether a continuous x is inside the highlighted probability region. */
 function inContinuousRegion(
@@ -10,7 +10,9 @@ function inContinuousRegion(
 ): boolean {
   if (inequality === "lt" || inequality === "le") return val <= x;
   if (inequality === "gt" || inequality === "ge") return val >= x;
-  if (inequality === "between") return val >= x && val <= upper;
+  // Continuous: the endpoints carry no probability mass, so every two-bound
+  // form shades the same region.
+  if (isBetween(inequality)) return val >= x && val <= upper;
   return false;
 }
 
@@ -21,7 +23,10 @@ function inDiscreteRegion(k: number, inequality: Inequality, x: number, upper: n
   if (inequality === "le") return k <= x;
   if (inequality === "gt") return k > x;
   if (inequality === "ge") return k >= x;
-  if (inequality === "between") return k >= x && k <= upper;
+  if (isBetween(inequality)) {
+    const { cdfLower, cdfUpper } = discreteBetweenBounds(inequality, x, upper);
+    return k > cdfLower && k <= cdfUpper;
+  }
   return false;
 }
 

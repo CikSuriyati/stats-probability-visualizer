@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/select";
 import {
   Field,
+  FieldRow,
   FormError,
   InequalitySelect,
   PrecisionRadio,
@@ -19,20 +20,31 @@ import {
 import { normalProbability, ValidationError } from "@/lib/stats";
 import { normalCurve } from "@/lib/plot-data";
 import { normalExplanation } from "@/lib/explanations";
-import type { CalcResult, Inequality, Precision } from "@/lib/types";
+import { isBetween, type CalcResult, type Inequality, type Precision } from "@/lib/types";
+import type { ExampleFields } from "@/lib/examples";
 
-export function NormalForm({ onResult }: { onResult: (r: CalcResult) => void }) {
-  const [type, setType] = useState<"population" | "sampling">("population");
-  const [n, setN] = useState("");
-  const [mean, setMean] = useState("");
-  const [sd, setSd] = useState("");
-  const [inequality, setInequality] = useState<Inequality>("lt");
-  const [x, setX] = useState("");
-  const [upper, setUpper] = useState("");
+export function NormalForm({
+  onResult,
+  initial,
+}: {
+  onResult: (r: CalcResult) => void;
+  initial?: ExampleFields;
+}) {
+  const [type, setType] = useState<"population" | "sampling">(
+    (initial?.type as "population" | "sampling") ?? "population",
+  );
+  const [n, setN] = useState(initial?.n ?? "");
+  const [mean, setMean] = useState(initial?.mean ?? "");
+  const [sd, setSd] = useState(initial?.sd ?? "");
+  const [inequality, setInequality] = useState<Inequality>(
+    (initial?.inequality as Inequality) ?? "lt",
+  );
+  const [x, setX] = useState(initial?.x ?? "");
+  const [upper, setUpper] = useState(initial?.upper ?? "");
   const [precision, setPrecision] = useState<Precision>(4);
   const [error, setError] = useState<string | null>(null);
 
-  const isBetween = inequality === "between";
+  const twoBound = isBetween(inequality);
   const isSampling = type === "sampling";
 
   function handleCalculate() {
@@ -67,7 +79,7 @@ export function NormalForm({ onResult }: { onResult: (r: CalcResult) => void }) 
           kind: "continuous",
           data,
           refX: params.x,
-          refUpper: isBetween ? params.upper : null,
+          refUpper: twoBound ? params.upper : null,
           refLabel: `Z = ${zScore.toFixed(2)}`,
           xLabel: "x",
         },
@@ -100,28 +112,39 @@ export function NormalForm({ onResult }: { onResult: (r: CalcResult) => void }) 
         </Field>
       )}
 
-      <Field label="Mean (μ)" htmlFor="normal-mean">
-        <Input id="normal-mean" type="number" value={mean} onChange={(e) => setMean(e.target.value)} />
-      </Field>
-
-      <Field label="Standard deviation (σ)" htmlFor="normal-sd">
-        <Input id="normal-sd" type="number" value={sd} onChange={(e) => setSd(e.target.value)} />
-      </Field>
+      <FieldRow>
+        <Field label="Mean (μ)" htmlFor="normal-mean">
+          <Input
+            id="normal-mean"
+            type="number"
+            value={mean}
+            onChange={(e) => setMean(e.target.value)}
+          />
+        </Field>
+        <Field label="Std. deviation (σ)" htmlFor="normal-sd">
+          <Input id="normal-sd" type="number" value={sd} onChange={(e) => setSd(e.target.value)} />
+        </Field>
+      </FieldRow>
 
       <InequalitySelect value={inequality} onChange={setInequality} />
 
-      <Field label={isBetween ? "Lower bound (a)" : "X value"} htmlFor="normal-x">
-        <Input id="normal-x" type="number" value={x} onChange={(e) => setX(e.target.value)} />
-      </Field>
-
-      {isBetween && (
-        <Field label="Upper bound (b)" htmlFor="normal-upper">
-          <Input
-            id="normal-upper"
-            type="number"
-            value={upper}
-            onChange={(e) => setUpper(e.target.value)}
-          />
+      {twoBound ? (
+        <FieldRow>
+          <Field label="Lower bound (a)" htmlFor="normal-x">
+            <Input id="normal-x" type="number" value={x} onChange={(e) => setX(e.target.value)} />
+          </Field>
+          <Field label="Upper bound (b)" htmlFor="normal-upper">
+            <Input
+              id="normal-upper"
+              type="number"
+              value={upper}
+              onChange={(e) => setUpper(e.target.value)}
+            />
+          </Field>
+        </FieldRow>
+      ) : (
+        <Field label="X value" htmlFor="normal-x">
+          <Input id="normal-x" type="number" value={x} onChange={(e) => setX(e.target.value)} />
         </Field>
       )}
 

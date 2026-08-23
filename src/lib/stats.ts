@@ -1,5 +1,5 @@
 import { jStat } from "jstat";
-import type { Inequality } from "./types";
+import { discreteBetweenBounds, isBetween, type Inequality } from "./types";
 
 /** Thrown when form input fails validation. Message is user-facing. */
 export class ValidationError extends Error {}
@@ -43,8 +43,12 @@ export function normalProbability(p: NormalParams): NormalOutcome {
     probability = jStat.normal.cdf(x, mean, sdUsed);
   else if (inequality === "gt" || inequality === "ge")
     probability = 1 - jStat.normal.cdf(x, mean, sdUsed);
-  else if (inequality === "between") {
+  else if (isBetween(inequality)) {
     if (Number.isNaN(upper)) throw new ValidationError("Please enter the upper bound value.");
+    if (upper < x)
+      throw new ValidationError("The upper bound must be greater than the lower bound.");
+    // For a continuous distribution a single point has zero probability, so
+    // all four two-bound forms give the same value.
     probability = jStat.normal.cdf(upper, mean, sdUsed) - jStat.normal.cdf(x, mean, sdUsed);
   }
 
@@ -69,8 +73,11 @@ export function tProbability(p: TParams): { probability: number } {
   let probability = 0;
   if (inequality === "lt" || inequality === "le") probability = jStat.studentt.cdf(x, df);
   else if (inequality === "gt" || inequality === "ge") probability = 1 - jStat.studentt.cdf(x, df);
-  else if (inequality === "between") {
+  else if (isBetween(inequality)) {
     if (Number.isNaN(upper)) throw new ValidationError("Please enter the upper bound value.");
+    if (upper < x)
+      throw new ValidationError("The upper bound must be greater than the lower bound.");
+    // Continuous: strict and non-strict bounds give the same probability.
     probability = jStat.studentt.cdf(upper, df) - jStat.studentt.cdf(x, df);
   }
 
@@ -113,24 +120,37 @@ export function binomialProbability(params: BinomialParams): BinomialOutcome {
   if (canApprox) {
     const mean = n * p;
     const std = Math.sqrt(n * p * (1 - p));
+
+    const F = (v: number) => jStat.normal.cdf((v - mean) / std, 0, 1);
+
+    // The one-sided forms keep the textbook expressions — Φ((k ± 0.5 − μ)/σ) —
+    // so the tool agrees with what a student works out by hand. The guards only
+    // catch inequalities that no outcome can satisfy (or that every outcome
+    // does), where the normal curve would otherwise put mass on impossible
+    // counts: P(X < 0) used to return 0.000758 instead of 0.
     if (inequality === "eq") {
-      probability =
-        jStat.normal.cdf((x + 0.5 - mean) / std, 0, 1) -
-        jStat.normal.cdf((x - 0.5 - mean) / std, 0, 1);
+      probability = x < 0 || x > n ? 0 : F(x + 0.5) - F(x - 0.5);
     } else if (inequality === "lt") {
-      probability = jStat.normal.cdf((x - 0.5 - mean) / std, 0, 1);
+      probability = x <= 0 ? 0 : F(x - 0.5);
     } else if (inequality === "le") {
-      probability = jStat.normal.cdf((x + 0.5 - mean) / std, 0, 1);
+      probability = x >= n ? 1 : F(x + 0.5);
     } else if (inequality === "gt") {
-      probability = 1 - jStat.normal.cdf((x + 0.5 - mean) / std, 0, 1);
+      probability = x >= n ? 0 : 1 - F(x + 0.5);
     } else if (inequality === "ge") {
-      probability = 1 - jStat.normal.cdf((x - 0.5 - mean) / std, 0, 1);
-    } else if (inequality === "between") {
+      probability = x <= 0 ? 1 : 1 - F(x - 0.5);
+    } else if (isBetween(inequality)) {
       if (Number.isNaN(upper)) throw new ValidationError("Please enter the upper bound value.");
-      probability =
-        jStat.normal.cdf((upper + 0.5 - mean) / std, 0, 1) -
-        jStat.normal.cdf((x - 0.5 - mean) / std, 0, 1);
+      if (upper < x)
+        throw new ValidationError("The upper bound must be greater than the lower bound.");
+      // Included outcomes are cdfLower+1 … cdfUpper, clamped to the support.
+      const { cdfLower, cdfUpper } = discreteBetweenBounds(inequality, x, upper);
+      const lo = Math.max(cdfLower + 1, 0);
+      const hi = Math.min(cdfUpper, n);
+      if (lo > hi) probability = 0;
+      else if (lo === 0 && hi === n) probability = 1;
+      else probability = F(hi + 0.5) - F(lo - 0.5);
     }
+    probability = Math.min(1, Math.max(0, probability));
     method = "Normal Approximation (with continuity correction)";
   } else {
     if (inequality === "eq") probability = jStat.binomial.pdf(x, n, p);
@@ -138,9 +158,12 @@ export function binomialProbability(params: BinomialParams): BinomialOutcome {
     else if (inequality === "le") probability = jStat.binomial.cdf(x, n, p);
     else if (inequality === "gt") probability = 1 - jStat.binomial.cdf(x, n, p);
     else if (inequality === "ge") probability = 1 - jStat.binomial.cdf(x - 1, n, p);
-    else if (inequality === "between") {
+    else if (isBetween(inequality)) {
       if (Number.isNaN(upper)) throw new ValidationError("Please enter the upper bound value.");
-      probability = jStat.binomial.cdf(upper, n, p) - jStat.binomial.cdf(x - 1, n, p);
+      if (upper < x)
+        throw new ValidationError("The upper bound must be greater than the lower bound.");
+      const { cdfLower, cdfUpper } = discreteBetweenBounds(inequality, x, upper);
+      probability = jStat.binomial.cdf(cdfUpper, n, p) - jStat.binomial.cdf(cdfLower, n, p);
     }
   }
 
@@ -190,10 +213,15 @@ export function poissonProbability(params: PoissonParams): PoissonOutcome {
   } else if (inequality === "ge") {
     probability = 1 - jStat.poisson.cdf(x - 1, lambda);
     description = `P(X ≥ ${x})`;
-  } else if (inequality === "between") {
+  } else if (isBetween(inequality)) {
     if (Number.isNaN(upper)) throw new ValidationError("Please enter the upper bound value.");
-    probability = jStat.poisson.cdf(upper, lambda) - jStat.poisson.cdf(x - 1, lambda);
-    description = `P(${x} ≤ X ≤ ${upper})`;
+    if (upper < x)
+      throw new ValidationError("The upper bound must be greater than the lower bound.");
+    const { cdfLower, cdfUpper } = discreteBetweenBounds(inequality, x, upper);
+    probability = jStat.poisson.cdf(cdfUpper, lambda) - jStat.poisson.cdf(cdfLower, lambda);
+    const lo = inequality === "between" || inequality === "betweenLeftIn" ? "≤" : "<";
+    const hi = inequality === "between" || inequality === "betweenRightIn" ? "≤" : "<";
+    description = `P(${x} ${lo} X ${hi} ${upper})`;
   }
 
   return { probability, description };

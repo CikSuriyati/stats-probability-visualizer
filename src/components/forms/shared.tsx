@@ -12,6 +12,14 @@ import {
 import type { CalcResult, Inequality, Precision } from "@/lib/types";
 import { Card, CardContent } from "@/components/ui/card";
 
+/**
+ * Two naturally-paired fields sharing a row (μ/σ, lower/upper bound).
+ * Stacks on narrow screens so the inputs never get too cramped to tap.
+ */
+export function FieldRow({ children }: { children: React.ReactNode }) {
+  return <div className="grid gap-3 sm:grid-cols-2">{children}</div>;
+}
+
 /** A labelled form field. */
 export function Field({
   label,
@@ -36,6 +44,9 @@ const CONTINUOUS_OPS: { value: Inequality; label: string }[] = [
   { value: "gt", label: "P(X > x)" },
   { value: "ge", label: "P(X ≥ x)" },
   { value: "between", label: "P(a ≤ X ≤ b)" },
+  { value: "betweenStrict", label: "P(a < X < b)" },
+  { value: "betweenLeftIn", label: "P(a ≤ X < b)" },
+  { value: "betweenRightIn", label: "P(a < X ≤ b)" },
 ];
 
 const DISCRETE_OPS: { value: Inequality; label: string }[] = [
@@ -45,6 +56,9 @@ const DISCRETE_OPS: { value: Inequality; label: string }[] = [
   { value: "gt", label: "P(X > k)" },
   { value: "ge", label: "P(X ≥ k)" },
   { value: "between", label: "P(a ≤ X ≤ b)" },
+  { value: "betweenStrict", label: "P(a < X < b)" },
+  { value: "betweenLeftIn", label: "P(a ≤ X < b)" },
+  { value: "betweenRightIn", label: "P(a < X ≤ b)" },
 ];
 
 export function InequalitySelect({

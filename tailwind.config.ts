@@ -13,6 +13,8 @@ const config: Config = {
     extend: {
       fontFamily: {
         sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"],
+        // Editorial serif for headings; body stays on Inter.
+        serif: ["'Playfair Display'", "ui-serif", "Georgia", "serif"],
       },
       colors: {
         border: "hsl(var(--border))",

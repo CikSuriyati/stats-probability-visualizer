@@ -10,6 +10,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { APP_TITLE, COPYRIGHT_YEAR } from "@/lib/version";
 
 const GOATCOUNTER_URL = "https://stats-probability-visualizer.goatcounter.com";
 
@@ -141,8 +142,7 @@ export function AboutTab() {
       </Card>
 
       <p className="pb-2 text-center text-xs text-muted-foreground">
-        <strong>ProbViz Version 2.0</strong> · Created for students by Suriyati Ujang © 2025 · For
-        educational use only.
+        <strong>{APP_TITLE}</strong> · © {COPYRIGHT_YEAR} · For educational use only.
       </p>
     </div>
   );
