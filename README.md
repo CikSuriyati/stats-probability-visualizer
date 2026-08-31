@@ -76,6 +76,24 @@ The app builds at the **root base path** (`base: "/"`). To host under a GitHub P
 Uses [GoatCounter](https://www.goatcounter.com/) — a lightweight, privacy-friendly analytics
 service (no personal data, no cross-site tracking). Configured via a script tag in `index.html`.
 
+## Licence
+
+ProbViz is licensed under the **Creative Commons
+Attribution-NonCommercial-NoDerivatives 4.0 International Licence
+(CC BY-NC-ND 4.0)** — see [`LICENSE`](LICENSE) for the full notice, and
+<https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode> for the governing text.
+
+In short: free to use and share for teaching and study, with attribution; no
+commercial use; and no republishing the code, interface design or visualisation
+approach as a separate application.
+
+The licence applies from the commit that adds it (v2.4 onward). Earlier commits
+were published without an explicit licence; this file states the terms going
+forward rather than changing them retroactively.
+
+Copyright © 2025–2026 Suriyati Ujang, Universiti Teknologi MARA, Pahang Branch,
+Raub Campus. User interface rewrite (v2.2 onward) copyright © 2026 Fareez Fauzi.
+
 ## Disclaimer
 
 For educational use only. Always verify results with established statistical software before relying

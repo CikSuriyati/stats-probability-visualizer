@@ -5,12 +5,19 @@ import {
   CheckCircle2,
   ExternalLink,
   GraduationCap,
+  Scale,
   Wrench,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { APP_TITLE, COPYRIGHT_YEAR } from "@/lib/version";
+import {
+  APP_TITLE,
+  COPYRIGHT_HOLDER,
+  COPYRIGHT_RANGE,
+  LICENSE,
+  LICENSE_URL,
+} from "@/lib/version";
 
 const GOATCOUNTER_URL = "https://stats-probability-visualizer.goatcounter.com";
 
@@ -141,8 +148,52 @@ export function AboutTab() {
         </CardContent>
       </Card>
 
+      <Card>
+        <CardHeader className="flex-row items-center gap-3 space-y-0">
+          <Scale className="h-5 w-5 text-primary" />
+          <CardTitle className="text-base">Licence &amp; credits</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4 text-sm leading-relaxed text-muted-foreground">
+          <p>
+            © {COPYRIGHT_RANGE} {COPYRIGHT_HOLDER}, Universiti Teknologi MARA, Pahang Branch, Raub
+            Campus. ProbViz is licensed under{" "}
+            <a
+              href={LICENSE_URL}
+              target="_blank"
+              rel="license noopener noreferrer"
+              className="font-medium text-foreground underline decoration-dotted underline-offset-2"
+            >
+              Creative Commons {LICENSE}
+            </a>
+            .
+          </p>
+          <ul className="list-disc space-y-1.5 pl-5">
+            <li>
+              <strong className="text-foreground">Free for teaching and study</strong> — use it in
+              class or to check your own working, and share a link to it.
+            </li>
+            <li>
+              <strong className="text-foreground">Attribution required</strong> — credit the author
+              and link the licence.
+            </li>
+            <li>
+              <strong className="text-foreground">No commercial use.</strong>
+            </li>
+            <li>
+              <strong className="text-foreground">No derivatives</strong> — the code, interface
+              design and visualisation approach may not be republished as a separate application.
+            </li>
+          </ul>
+          <p className="border-t pt-3">
+            <strong className="text-foreground">Contributors.</strong> Created by{" "}
+            {COPYRIGHT_HOLDER}. User interface rewrite (v2.2 onward) by Fareez Fauzi.
+          </p>
+        </CardContent>
+      </Card>
+
       <p className="pb-2 text-center text-xs text-muted-foreground">
-        <strong>{APP_TITLE}</strong> · © {COPYRIGHT_YEAR} · For educational use only.
+        <strong>{APP_TITLE}</strong> · For educational use — always verify results before relying on
+        them.
       </p>
     </div>
   );
