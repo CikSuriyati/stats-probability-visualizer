@@ -1,6 +1,14 @@
 import { useState } from "react";
 
-import { APP_NAME, APP_TITLE, APP_VERSION, COPYRIGHT_YEAR } from "@/lib/version";
+import {
+  APP_NAME,
+  APP_TITLE,
+  APP_VERSION,
+  COPYRIGHT_HOLDER,
+  COPYRIGHT_RANGE,
+  LICENSE,
+  LICENSE_URL,
+} from "@/lib/version";
 import { DISCRETE_DISTRIBUTIONS } from "@/lib/examples";
 import type { Distribution } from "@/lib/types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -90,8 +98,16 @@ export default function App() {
         {/* Footer */}
         <footer className="mt-12 flex flex-col items-center gap-1 border-t pt-6 text-xs text-muted-foreground sm:flex-row sm:justify-between sm:gap-0">
           <span>See the curve, understand the concept.</span>
-          <span>
-            {APP_TITLE} · © {COPYRIGHT_YEAR}
+          <span className="text-center sm:text-right">
+            {APP_TITLE} · © {COPYRIGHT_RANGE} {COPYRIGHT_HOLDER} ·{" "}
+            <a
+              href={LICENSE_URL}
+              target="_blank"
+              rel="license noopener noreferrer"
+              className="underline decoration-dotted underline-offset-2 hover:text-foreground"
+            >
+              {LICENSE}
+            </a>
           </span>
         </footer>
       </div>

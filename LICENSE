@@ -1,0 +1,74 @@
+ProbViz — Statistics & Probability Visualizer
+
+Copyright (c) 2025–2026 Suriyati Ujang
+UI rewrite (v2.2 onward) copyright (c) 2026 Fareez Fauzi
+Universiti Teknologi MARA, Pahang Branch, Raub Campus
+
+This work is licensed under the Creative Commons
+Attribution-NonCommercial-NoDerivatives 4.0 International Licence
+(CC BY-NC-ND 4.0).
+
+Full licence text:
+    https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode
+Plain-language summary:
+    https://creativecommons.org/licenses/by-nc-nd/4.0/
+
+The full text at the link above governs. The summary below is for
+orientation only and is not a substitute for it.
+
+
+YOU ARE FREE TO
+
+    Share — copy and redistribute the material in any medium or format.
+
+The licensor cannot revoke these freedoms as long as you follow the
+licence terms.
+
+
+UNDER THE FOLLOWING TERMS
+
+    Attribution — You must give appropriate credit, provide a link to
+    the licence, and indicate if changes were made. You may do so in any
+    reasonable manner, but not in any way that suggests the licensor
+    endorses you or your use.
+
+    NonCommercial — You may not use the material for commercial
+    purposes.
+
+    NoDerivatives — If you remix, transform, or build upon the material,
+    you may not distribute the modified material.
+
+
+SCOPE OF THIS LICENCE
+
+This licence covers the whole of the work, including without limitation
+the source code, the user interface design, and the visualisation
+approach — the way distributions, shaded probability regions, formulas
+and explanations are presented together.
+
+Republishing ProbViz, in whole or in part, modified or unmodified, as a
+separate application, product or service is not permitted under this
+licence. Neither is reproducing its interface design or visualisation
+approach in another application.
+
+
+PERMITTED WITHOUT FURTHER PERMISSION
+
+    - Use in teaching, study, and academic research.
+    - Sharing a link to the application.
+    - Quoting or citing the work, with attribution.
+
+
+OTHER USES
+
+Requests for any use beyond these terms — including commercial use,
+derivative works, or redistribution as part of another application —
+should be directed to the copyright holder.
+
+
+NO WARRANTY
+
+The work is provided "as is", without warranty of any kind, express or
+implied. See the About section of the application regarding the accuracy
+of its calculations, and verify results with established statistical
+software before relying on them.
