@@ -68,6 +68,12 @@ export default function App() {
                     About
                   </TabsTrigger>
                 </TabsList>
+                <a
+                  href="https://visuallymath.com"
+                  className="whitespace-nowrap text-sm text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  ← Visualab
+                </a>
                 <ModeToggle />
               </div>
             </div>
