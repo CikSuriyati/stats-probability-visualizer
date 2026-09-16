@@ -90,6 +90,7 @@ export default function App() {
         {/* Footer */}
         <footer className="mt-12 flex flex-col items-center gap-1 border-t pt-6 text-xs text-muted-foreground sm:flex-row sm:justify-between sm:gap-0">
           <span>See the curve, understand the concept.</span>
+          <span className="page-counter" data-page-counter hidden />
           <span>
             {APP_TITLE} · © {COPYRIGHT_YEAR}
           </span>
