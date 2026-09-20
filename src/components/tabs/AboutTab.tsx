@@ -1,10 +1,14 @@
 import {
   Activity,
   AlertTriangle,
+  Award,
   BarChart3,
+  BookOpen,
   CheckCircle2,
+  Copyright as CopyrightIcon,
   ExternalLink,
   GraduationCap,
+  History,
   Wrench,
 } from "lucide-react";
 
@@ -16,7 +20,7 @@ const GOATCOUNTER_URL = "https://stats-probability-visualizer.goatcounter.com";
 
 export function AboutTab() {
   return (
-    <div className="mx-auto max-w-3xl space-y-6">
+    <div className="space-y-6">
       <Card>
         <CardHeader className="flex-row items-center gap-3 space-y-0">
           <GraduationCap className="h-5 w-5 text-primary" />
@@ -32,6 +36,131 @@ export function AboutTab() {
             <strong>Important:</strong> This application should not be used for critical
             decision-making or professional statistical analysis without proper verification.
           </p>
+        </CardContent>
+      </Card>
+
+      <Card className="border-violet-200 dark:border-violet-900">
+        <CardHeader className="flex-row items-center gap-3 space-y-0">
+          <CopyrightIcon className="h-5 w-5 text-violet-600 dark:text-violet-400" />
+          <CardTitle className="text-base">Copyright</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-2 text-sm text-muted-foreground">
+          <span className="inline-flex items-center rounded-full border border-violet-300 bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-700 dark:border-violet-800 dark:bg-violet-950 dark:text-violet-300">
+            © IP/CR/08563
+          </span>
+          <p className="leading-relaxed">
+            Registered as &ldquo;ProbViz: INTERACTIVE STATISTICS &amp; PROBABILITY
+            VISUALIZER&rdquo;.
+          </p>
+        </CardContent>
+      </Card>
+
+      <Card className="border-blue-200 dark:border-blue-900">
+        <CardHeader className="flex-row items-center gap-3 space-y-0">
+          <BookOpen className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+          <CardTitle className="text-base">Publication</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3 text-sm text-muted-foreground">
+          <p className="leading-relaxed text-foreground">
+            &ldquo;ProbViz: Interactive Statistics &amp; Probability Visualizer&rdquo;
+            <br />
+            <span className="text-muted-foreground">
+              Muhammad Fareez Bin Mohd Fauzi, Suriyati Ujang
+            </span>
+          </p>
+          <p className="text-xs">
+            Published in the PIID2025 Extended Abstracts e-Proceedings, p. 1526–1527 (eISBN
+            978-629-92685-0-5).
+          </p>
+          <div className="flex flex-wrap gap-2">
+            <img
+              src="/paper-piid2025-certificate.jpg"
+              alt="PIID2025 Certificate of Achievement: Silver Award for ProbViz: Interactive Statistics & Probability Visualizer"
+              className="w-32 sm:w-40 rounded-md border"
+            />
+            <img
+              src="/paper-piid2025-abstract.png"
+              alt="Extended abstract: Abstract, Keywords and Product description sections for ProbViz"
+              className="w-32 sm:w-40 rounded-md border"
+            />
+          </div>
+          <Button
+            asChild
+            size="sm"
+            className="border-blue-300 bg-blue-600 text-white hover:bg-blue-700 dark:border-blue-800"
+          >
+            <a
+              href="https://piid2025.uitmcpp.com/index.php#Published_EA"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Read the published extended abstract
+              <ExternalLink className="h-4 w-4" />
+            </a>
+          </Button>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="flex-row items-center gap-3 space-y-0">
+          <History className="h-5 w-5 text-primary" />
+          <CardTitle className="text-base">Project history</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4 text-sm text-muted-foreground">
+          <p>
+            ProbViz began in August 2025 as a single-page normal-distribution calculator and has
+            been developed openly ever since.
+          </p>
+
+          <div className="rounded-md border p-4">
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-foreground">
+              Version 1 · August 2025
+            </p>
+            <p className="mb-3 leading-relaxed">
+              The original release: an interactive curve for the normal distribution, built to
+              make one concept — the area under the curve — visible rather than memorised.
+            </p>
+            <span className="inline-flex items-center gap-1 rounded-full border border-amber-300 bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-300">
+              <Award className="h-3.5 w-3.5" />
+              Silver medal · PIID 2025
+            </span>
+            <p className="mt-3 leading-relaxed">
+              This is the version entered into the Penang International Invention, Innovation
+              &amp; Design (PIID) 2025 competition, and later published — see{" "}
+              <span className="font-medium text-blue-600 dark:text-blue-400">Publication</span>{" "}
+              above.
+            </p>
+          </div>
+
+          <div className="rounded-md border p-4">
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-foreground">
+              Version 2.0–2.4 · October 2025 – August 2026
+            </p>
+            <p className="mb-2 leading-relaxed">
+              Pedagogical UI improvements on the original normal-distribution core, followed by a
+              ground-up rewrite onto React, TypeScript, Tailwind and shadcn/ui — the foundation
+              ProbViz still runs on today.
+            </p>
+            <ul className="list-disc space-y-1 pl-5">
+              <li>Z-score annotations and shaded probability-area labels on the curve</li>
+              <li>A dedicated About page with usage and accuracy disclaimers</li>
+              <li>A mobile-responsive, stacked layout</li>
+              <li>
+                Binomial, Poisson and t-distribution support, alongside the original Normal
+                distribution
+              </li>
+              <li>KaTeX-rendered formulas in place of plain text</li>
+              <li>A worked example on landing, more inequality forms, and a visual refresh (2.4)</li>
+            </ul>
+            <span className="mt-3 inline-flex items-center rounded-full border border-muted-foreground/30 bg-muted px-3 py-1 text-xs font-semibold text-muted-foreground">
+              Entered · VIIIC 2026
+            </span>
+            <p className="mt-3 leading-relaxed">
+              Version 2.4 was entered into the 5th International Business &amp; Management Virtual
+              Innovation &amp; Invention Ideas Competition (VIIIC 2026). Results have not yet been
+              announced and are due 6 October 2026.
+            </p>
+          </div>
         </CardContent>
       </Card>
 
@@ -143,6 +272,9 @@ export function AboutTab() {
 
       <p className="pb-2 text-center text-xs text-muted-foreground">
         <strong>{APP_TITLE}</strong> · © {COPYRIGHT_YEAR} · For educational use only.
+        <br />
+        Copyright registered as &ldquo;ProbViz: INTERACTIVE STATISTICS &amp; PROBABILITY
+        VISUALIZER&rdquo; · IP/CR/08563
       </p>
     </div>
   );
