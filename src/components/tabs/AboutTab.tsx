@@ -152,13 +152,15 @@ export function AboutTab() {
               <li>KaTeX-rendered formulas in place of plain text</li>
               <li>A worked example on landing, more inequality forms, and a visual refresh (2.4)</li>
             </ul>
-            <span className="mt-3 inline-flex items-center rounded-full border border-muted-foreground/30 bg-muted px-3 py-1 text-xs font-semibold text-muted-foreground">
-              Entered · VIIIC 2026
+            <span className="mt-3 inline-flex items-center gap-1 rounded-full border border-amber-300 bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-300">
+              <Award className="h-3.5 w-3.5" />
+              Silver medal · VIIIC 2026
             </span>
             <p className="mt-3 leading-relaxed">
-              Version 2.4 was entered into the 5th International Business &amp; Management Virtual
-              Innovation &amp; Invention Ideas Competition (VIIIC 2026). Results have not yet been
-              announced and are due 6 October 2026.
+              Version 2.4, entered as &ldquo;ProbViz 2.4: From Answer to Explanation&rdquo;, won a
+              silver medal at the 5th International Business &amp; Management Virtual Innovation
+              &amp; Invention Ideas Competition (VIIIC 2026), organised by the Faculty of Business
+              and Management, Universiti Teknologi MARA, on 6 October 2026.
             </p>
           </div>
         </CardContent>
